@@ -101,56 +101,56 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
 
         {/* Back Face */}
         <div
-          className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow bg-surface"
+          className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow bg-card"
           style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
         >
-          <div className="h-full flex flex-col p-3 overflow-y-auto scrollbar-hide">
+          <div className="h-full flex flex-col p-3.5 overflow-y-auto scrollbar-hide">
             {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="font-display text-sm sm:text-base leading-tight text-cream pr-2">{cocktail.name}</h3>
-              <div className="flex gap-1.5 shrink-0">
-                <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-white/10 transition-colors">
+            <div className="flex items-start justify-between mb-1.5">
+              <h3 className="font-display text-base leading-tight text-foreground pr-2">{cocktail.name}</h3>
+              <div className="flex gap-1 shrink-0">
+                <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-muted transition-colors">
                   <Heart className={`w-4 h-4 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
                 </button>
-                <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-white/10 transition-colors">
+                <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
                   <Plus className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
             </div>
 
             {/* Glassware */}
-            <p className="text-[10px] text-brass mb-2">{cocktail.glassware} · {cocktail.prepTime}</p>
+            <p className="text-[11px] text-brass mb-2.5">{cocktail.glassware} · {cocktail.prepTime}</p>
 
             {/* Ingredients */}
-            <div className="mb-2">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Ingredients</p>
+            <div className="mb-2.5">
+              <p className="text-[10px] uppercase tracking-widest text-brass font-semibold mb-1.5">Ingredients</p>
               {cocktail.ingredients.map((ing, i) => (
-                <div key={i} className="flex justify-between text-[11px] py-0.5 border-b border-white/5 last:border-0">
-                  <span className="text-cream/80">{ing.item}</span>
-                  <span className="text-brass tabular-nums font-medium">{ing.amount}</span>
+                <div key={i} className="flex justify-between text-xs py-[3px] border-b border-border/50 last:border-0">
+                  <span className="text-foreground/90">{ing.item}</span>
+                  <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
                 </div>
               ))}
             </div>
 
             {/* Instructions */}
-            <div className="mb-2 gradient-mask-b">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Method</p>
+            <div className="mb-2.5">
+              <p className="text-[10px] uppercase tracking-widest text-brass font-semibold mb-1.5">Method</p>
               {cocktail.instructions.map((step, i) => (
-                <p key={i} className="text-[10px] text-cream/70 mb-0.5">
-                  <span className="text-brass mr-1">{i + 1}.</span>{step}
+                <p key={i} className="text-[11px] leading-relaxed text-foreground/80 mb-1">
+                  <span className="text-brass font-semibold mr-1.5">{i + 1}.</span>{step}
                 </p>
               ))}
             </div>
 
             {/* Garnish */}
-            <p className="text-[10px] text-muted-foreground mt-auto">
-              Garnish: <span className="text-cream/70">{cocktail.garnish}</span>
+            <p className="text-[11px] text-muted-foreground mt-auto pt-1 border-t border-border/30">
+              Garnish: <span className="text-foreground/80">{cocktail.garnish}</span>
             </p>
 
             {/* Flip back hint */}
             <button
               onClick={handleFlip}
-              className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1 hover:text-brass transition-colors"
+              className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1.5 hover:text-brass transition-colors"
             >
               <RotateCcw className="w-3 h-3" /> Flip back
             </button>
