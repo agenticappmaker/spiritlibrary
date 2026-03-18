@@ -1,24 +1,38 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import BottomNav from "@/components/BottomNav";
+import HomePage from "@/pages/HomePage";
+import SavedPage from "@/pages/SavedPage";
+import ListsPage from "@/pages/ListsPage";
+import SharedListPage from "@/pages/SharedListPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <Sonner
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'hsl(240 6% 14%)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: 'hsl(40 20% 92%)',
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/saved" element={<SavedPage />} />
+          <Route path="/lists" element={<ListsPage />} />
+          <Route path="/shared/:listId" element={<SharedListPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BottomNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
