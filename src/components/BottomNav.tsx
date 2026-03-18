@@ -1,8 +1,9 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Search, Heart, List, Shuffle } from 'lucide-react';
+import { Search, Heart, List, ChefHat } from 'lucide-react';
 
 const navItems = [
   { to: '/', icon: Search, label: 'Library' },
+  { to: '/ingredients', icon: ChefHat, label: 'My Bar' },
   { to: '/saved', icon: Heart, label: 'Saved' },
   { to: '/lists', icon: List, label: 'My Lists' },
 ];

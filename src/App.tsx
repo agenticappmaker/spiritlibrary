@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BottomNav from "@/components/BottomNav";
 import HomePage from "@/pages/HomePage";
+import IngredientSearch from "@/components/IngredientSearch";
 import SavedPage from "@/pages/SavedPage";
 import ListsPage from "@/pages/ListsPage";
 import SharedListPage from "@/pages/SharedListPage";
@@ -27,6 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/ingredients" element={<IngredientSearch />} />
           <Route path="/saved" element={<SavedPage />} />
           <Route path="/lists" element={<ListsPage />} />
           <Route path="/shared/:listId" element={<SharedListPage />} />

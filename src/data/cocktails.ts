@@ -983,6 +983,9 @@ function makeCocktail(
   return { id, name, description, spirit, difficulty, glassware, garnish, ingredients, instructions, flavorTags, occasionTags, category, abv: normalizedAbv, prepTime, color };
 }
 
+import extraCocktails from './cocktails-extra';
+cocktailsData.push(...extraCocktails);
+
 export default cocktailsData;
 
 // Helper to get unique spirits
