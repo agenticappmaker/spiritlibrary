@@ -977,9 +977,10 @@ function makeCocktail(
   id: string, name: string, description: string, spirit: Spirit, difficulty: Difficulty,
   glassware: string, garnish: string, ingredients: { item: string; amount: string }[],
   instructions: string[], flavorTags: FlavorTag[], occasionTags: Occasion[],
-  category: 'Classic' | 'Modern', abv: 'High' | 'Medium' | 'Low', prepTime: string, color: string
+  category: 'Classic' | 'Modern', abv: string, prepTime: string, color: string
 ): Cocktail {
-  return { id, name, description, spirit, difficulty, glassware, garnish, ingredients, instructions, flavorTags, occasionTags, category, abv, prepTime, color };
+  const normalizedAbv: 'High' | 'Medium' | 'Low' = abv === 'High' ? 'High' : abv === 'Low' ? 'Low' : 'Medium';
+  return { id, name, description, spirit, difficulty, glassware, garnish, ingredients, instructions, flavorTags, occasionTags, category, abv: normalizedAbv, prepTime, color };
 }
 
 export default cocktailsData;
