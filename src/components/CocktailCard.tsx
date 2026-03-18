@@ -4,6 +4,7 @@ import { Heart, Plus, RotateCcw } from 'lucide-react';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
 import { toast } from 'sonner';
+import cocktailImages from '@/assets/cocktails';
 
 interface CocktailCardProps {
   cocktail: Cocktail;
