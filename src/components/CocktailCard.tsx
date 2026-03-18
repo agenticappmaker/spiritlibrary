@@ -4,6 +4,7 @@ import { Heart, Plus, RotateCcw } from 'lucide-react';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
 import { toast } from 'sonner';
+import cocktailImages from '@/assets/cocktails';
 
 interface CocktailCardProps {
   cocktail: Cocktail;
@@ -39,6 +40,7 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
   const [isFlipped, setIsFlipped] = useState(false);
   const { toggleSaved, savedCocktailIds, addToRecentlyViewed } = useAppStore();
   const isSaved = savedCocktailIds.includes(cocktail.id);
+  const image = cocktailImages[cocktail.id];
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -75,8 +77,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
         {/* Front Face */}
         <div className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow">
           <div className={`absolute inset-0 bg-gradient-to-br ${cocktail.color}`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-end p-3">
+          {image && (
+            <img
+              src={image}
+              alt={cocktail.name}
+              className="absolute inset-0 w-full h-full object-contain p-4 z-10"
+              loading="lazy"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20" />
+          <div className="absolute inset-0 flex flex-col justify-end p-3 z-30">
             <h3 className="font-display text-base sm:text-lg leading-tight text-cream">{cocktail.name}</h3>
             <div className="flex gap-1.5 mt-2 flex-wrap">
               <span className={`text-[10px] px-2 py-0.5 rounded-full backdrop-blur-md text-cream/90 ${spiritColors[cocktail.spirit] || 'bg-white/10'}`}>
