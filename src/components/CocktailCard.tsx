@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Plus, RotateCcw } from 'lucide-react';
+import { Heart, Plus, RotateCcw, ShoppingCart } from 'lucide-react';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
 import { toast } from 'sonner';
