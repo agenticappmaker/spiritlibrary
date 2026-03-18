@@ -38,7 +38,7 @@ const difficultyColors: Record<string, string> = {
 
 export default function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const { toggleSaved, savedCocktailIds, addToRecentlyViewed } = useAppStore();
+  const { toggleSaved, savedCocktailIds, addToRecentlyViewed, addToShoppingList, isInShoppingList, removeFromShoppingList } = useAppStore();
   const isSaved = savedCocktailIds.includes(cocktail.id);
   const image = cocktailImages[cocktail.id];
 
