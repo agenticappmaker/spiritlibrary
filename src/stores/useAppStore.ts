@@ -9,10 +9,19 @@ export interface CocktailList {
   createdAt: number;
 }
 
+export interface ShoppingItem {
+  ingredient: string;
+  cocktailId?: string;
+  cocktailName?: string;
+  checked: boolean;
+  addedAt: number;
+}
+
 interface AppState {
   savedCocktailIds: string[];
   lists: CocktailList[];
   recentlyViewed: string[];
+  shoppingList: ShoppingItem[];
   
   // Actions
   toggleSaved: (id: string) => void;
@@ -26,6 +35,18 @@ interface AppState {
   addToList: (listId: string, cocktailId: string) => void;
   removeFromList: (listId: string, cocktailId: string) => void;
   duplicateList: (listId: string) => string;
+
+  // Shopping list actions
+  addToShoppingList: (ingredient: string, cocktailId?: string, cocktailName?: string) => void;
+  removeFromShoppingList: (ingredient: string) => void;
+  toggleShoppingItem: (ingredient: string) => void;
+  clearShoppingList: () => void;
+  clearCheckedItems: () => void;
+  isInShoppingList: (ingredient: string) => boolean;
+}
+
+function normalizeIngredient(name: string): string {
+  return name.toLowerCase().replace(/fresh\s+/g, '').replace(/\s+/g, ' ').trim();
 }
 
 export const useAppStore = create<AppState>()(
@@ -34,6 +55,7 @@ export const useAppStore = create<AppState>()(
       savedCocktailIds: [],
       lists: [],
       recentlyViewed: [],
+      shoppingList: [],
       
       toggleSaved: (id) => set((state) => ({
         savedCocktailIds: state.savedCocktailIds.includes(id)
@@ -92,7 +114,45 @@ export const useAppStore = create<AppState>()(
           }]
         }));
         return id;
-      }
+      },
+
+      addToShoppingList: (ingredient, cocktailId, cocktailName) => set((state) => {
+        const norm = normalizeIngredient(ingredient);
+        const exists = state.shoppingList.some(i => normalizeIngredient(i.ingredient) === norm);
+        if (exists) return state;
+        return {
+          shoppingList: [...state.shoppingList, {
+            ingredient,
+            cocktailId,
+            cocktailName,
+            checked: false,
+            addedAt: Date.now(),
+          }]
+        };
+      }),
+
+      removeFromShoppingList: (ingredient) => set((state) => ({
+        shoppingList: state.shoppingList.filter(i => normalizeIngredient(i.ingredient) !== normalizeIngredient(ingredient))
+      })),
+
+      toggleShoppingItem: (ingredient) => set((state) => ({
+        shoppingList: state.shoppingList.map(i =>
+          normalizeIngredient(i.ingredient) === normalizeIngredient(ingredient)
+            ? { ...i, checked: !i.checked }
+            : i
+        )
+      })),
+
+      clearShoppingList: () => set({ shoppingList: [] }),
+
+      clearCheckedItems: () => set((state) => ({
+        shoppingList: state.shoppingList.filter(i => !i.checked)
+      })),
+
+      isInShoppingList: (ingredient) => {
+        const norm = normalizeIngredient(ingredient);
+        return get().shoppingList.some(i => normalizeIngredient(i.ingredient) === norm);
+      },
     }),
     { name: 'spirit-library-store' }
   )
