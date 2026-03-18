@@ -1,11 +1,12 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Search, Heart, List, ChefHat } from 'lucide-react';
+import { Search, Heart, List, ChefHat, ArrowLeftRight } from 'lucide-react';
 
 const navItems = [
   { to: '/', icon: Search, label: 'Library' },
   { to: '/ingredients', icon: ChefHat, label: 'My Bar' },
+  { to: '/substitutions', icon: ArrowLeftRight, label: 'Swaps' },
   { to: '/saved', icon: Heart, label: 'Saved' },
-  { to: '/lists', icon: List, label: 'My Lists' },
+  { to: '/lists', icon: List, label: 'Lists' },
 ];
 
 export default function BottomNav() {
