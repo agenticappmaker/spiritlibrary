@@ -65,8 +65,7 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.03 }}
-      className="perspective-1000 aspect-square cursor-pointer"
-      onClick={handleFlip}
+      className="perspective-1000 aspect-square"
     >
       <motion.div
         className="relative w-full h-full preserve-3d"
@@ -75,7 +74,7 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Front Face */}
-        <div className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow">
+        <div className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow cursor-pointer" onClick={handleFlip}>
           <div className={`absolute inset-0 bg-gradient-to-br ${cocktail.color}`} />
           {image && (
             <img
