@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Plus, RotateCcw } from 'lucide-react';
+import { Heart, Plus, RotateCcw, ShoppingCart } from 'lucide-react';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
 import { toast } from 'sonner';
@@ -38,7 +38,7 @@ const difficultyColors: Record<string, string> = {
 
 export default function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const { toggleSaved, savedCocktailIds, addToRecentlyViewed } = useAppStore();
+  const { toggleSaved, savedCocktailIds, addToRecentlyViewed, addToShoppingList, isInShoppingList, removeFromShoppingList } = useAppStore();
   const isSaved = savedCocktailIds.includes(cocktail.id);
   const image = cocktailImages[cocktail.id];
 
@@ -142,12 +142,32 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               {/* Ingredients */}
               <div className="mb-2.5">
                 <p className="text-[10px] uppercase tracking-widest text-brass font-semibold mb-1.5">Ingredients</p>
-                {cocktail.ingredients.map((ing, i) => (
-                  <div key={i} className="flex justify-between text-xs py-[3px] border-b border-border/50 last:border-0 gap-2">
-                    <span className="text-foreground/90">{ing.item}</span>
-                    <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
-                  </div>
-                ))}
+                {cocktail.ingredients.map((ing, i) => {
+                  const inList = isInShoppingList(ing.item);
+                  return (
+                    <div key={i} className="flex items-center text-xs py-[3px] border-b border-border/50 last:border-0 gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (inList) {
+                            removeFromShoppingList(ing.item);
+                          } else {
+                            addToShoppingList(ing.item, cocktail.id, cocktail.name);
+                          }
+                        }}
+                        className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center shrink-0 transition-colors ${
+                          inList
+                            ? 'bg-brass/30 border-brass text-brass'
+                            : 'border-muted-foreground/40 hover:border-brass/60'
+                        }`}
+                      >
+                        {inList && <ShoppingCart className="w-2 h-2" />}
+                      </button>
+                      <span className="text-foreground/90 flex-1">{ing.item}</span>
+                      <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Instructions */}
