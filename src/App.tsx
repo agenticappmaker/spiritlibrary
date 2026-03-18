@@ -8,6 +8,7 @@ import IngredientSearch from "@/components/IngredientSearch";
 import SavedPage from "@/pages/SavedPage";
 import ListsPage from "@/pages/ListsPage";
 import SharedListPage from "@/pages/SharedListPage";
+import SubstitutionsPage from "@/pages/SubstitutionsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/ingredients" element={<IngredientSearch />} />
+          <Route path="/substitutions" element={<SubstitutionsPage />} />
           <Route path="/saved" element={<SavedPage />} />
           <Route path="/lists" element={<ListsPage />} />
           <Route path="/shared/:listId" element={<SharedListPage />} />
