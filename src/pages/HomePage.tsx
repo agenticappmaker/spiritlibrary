@@ -189,14 +189,14 @@ export default function HomePage() {
       {/* Tonight's Pick */}
       {!isSearching && (
         <div className="px-4 mb-6">
-          <div className="glass rounded-lg p-4 flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${randomPick.color} shrink-0`} />
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] uppercase tracking-wider text-brass mb-0.5">Tonight's Pick</p>
-              <p className="font-display text-sm text-cream truncate">{randomPick.name}</p>
-              <p className="text-[11px] text-muted-foreground truncate">{randomPick.description}</p>
-            </div>
-            <Shuffle className="w-4 h-4 text-brass shrink-0" />
+          <p className="text-[10px] uppercase tracking-wider text-brass mb-2 flex items-center gap-1.5">
+            <Shuffle className="w-3 h-3" /> Tonight's Pick
+          </p>
+          <div className="max-w-[200px]">
+            <CocktailCard
+              cocktail={randomPick}
+              onAddToList={setAddToListCocktailId}
+            />
           </div>
         </div>
       )}
