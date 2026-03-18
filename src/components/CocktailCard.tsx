@@ -103,8 +103,9 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
         <div
           className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow bg-card"
           style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className="h-full flex flex-col p-3.5 overflow-y-auto scrollbar-hide">
+          <div className="h-full flex flex-col p-3.5 overflow-y-auto overscroll-contain">
             {/* Header */}
             <div className="flex items-start justify-between mb-1.5">
               <h3 className="font-display text-base leading-tight text-foreground pr-2">{cocktail.name}</h3>
@@ -143,16 +144,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
             </div>
 
             {/* Garnish */}
-            <p className="text-[11px] text-muted-foreground mt-auto pt-1 border-t border-border/30">
+            <p className="text-[11px] text-muted-foreground pt-1 border-t border-border/30">
               Garnish: <span className="text-foreground/80">{cocktail.garnish}</span>
             </p>
 
-            {/* Flip back hint */}
+            {/* Flip back button */}
             <button
-              onClick={handleFlip}
-              className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1.5 hover:text-brass transition-colors"
+              onClick={(e) => { e.stopPropagation(); handleFlip(); }}
+              className="flex items-center justify-center gap-1.5 text-xs text-brass mt-3 mb-1 py-2 rounded-md hover:bg-muted transition-colors font-medium shrink-0"
             >
-              <RotateCcw className="w-3 h-3" /> Flip back
+              <RotateCcw className="w-3.5 h-3.5" /> Flip back
             </button>
           </div>
         </div>
