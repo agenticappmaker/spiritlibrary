@@ -28,6 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/ingredients" element={<IngredientSearch />} />
           <Route path="/saved" element={<SavedPage />} />
           <Route path="/lists" element={<ListsPage />} />
           <Route path="/shared/:listId" element={<SharedListPage />} />
