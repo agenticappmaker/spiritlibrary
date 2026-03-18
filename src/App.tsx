@@ -9,6 +9,7 @@ import SavedPage from "@/pages/SavedPage";
 import ListsPage from "@/pages/ListsPage";
 import SharedListPage from "@/pages/SharedListPage";
 import SubstitutionsPage from "@/pages/SubstitutionsPage";
+import ShoppingListPage from "@/pages/ShoppingListPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
