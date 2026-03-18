@@ -984,7 +984,12 @@ function makeCocktail(
 }
 
 import extraCocktails from './cocktails-extra';
-cocktailsData.push(...extraCocktails);
+import ginCocktails from './cocktails-gin';
+import vodkaCocktails from './cocktails-vodka';
+import whiskeyCocktails from './cocktails-whiskey';
+import tequilaCocktails from './cocktails-tequila';
+import rumCocktails from './cocktails-rum';
+cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails);
 
 export default cocktailsData;
 
