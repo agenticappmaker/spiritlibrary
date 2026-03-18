@@ -85,7 +85,8 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               loading="lazy"
             />
           )}
-          <div className="absolute inset-0 flex flex-col justify-end p-3">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20" />
+          <div className="absolute inset-0 flex flex-col justify-end p-3 z-30">
             <h3 className="font-display text-base sm:text-lg leading-tight text-cream">{cocktail.name}</h3>
             <div className="flex gap-1.5 mt-2 flex-wrap">
               <span className={`text-[10px] px-2 py-0.5 rounded-full backdrop-blur-md text-cream/90 ${spiritColors[cocktail.spirit] || 'bg-white/10'}`}>
