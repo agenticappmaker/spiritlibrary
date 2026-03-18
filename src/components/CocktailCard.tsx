@@ -77,7 +77,14 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
         {/* Front Face */}
         <div className="absolute inset-0 backface-hidden rounded-lg overflow-hidden brass-glow">
           <div className={`absolute inset-0 bg-gradient-to-br ${cocktail.color}`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          {image && (
+            <img
+              src={image}
+              alt={cocktail.name}
+              className="absolute inset-0 w-full h-full object-contain p-4 z-10"
+              loading="lazy"
+            />
+          )}
           <div className="absolute inset-0 flex flex-col justify-end p-3">
             <h3 className="font-display text-base sm:text-lg leading-tight text-cream">{cocktail.name}</h3>
             <div className="flex gap-1.5 mt-2 flex-wrap">
