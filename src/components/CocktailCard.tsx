@@ -40,6 +40,7 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
   const [isFlipped, setIsFlipped] = useState(false);
   const { toggleSaved, savedCocktailIds, addToRecentlyViewed } = useAppStore();
   const isSaved = savedCocktailIds.includes(cocktail.id);
+  const image = cocktailImages[cocktail.id];
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
