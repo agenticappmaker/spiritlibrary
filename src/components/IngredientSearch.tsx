@@ -148,10 +148,7 @@ export default function IngredientSearch() {
       })
       .filter(result => combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
-      .slice(0, 50);
-      .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
-      .slice(0, 50);
-  }, [myIngredients, exactMatch]);
+  }, [myIngredients, combineAll]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
