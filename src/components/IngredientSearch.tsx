@@ -16,13 +16,34 @@ const allIngredientNames = Array.from(
 ).sort();
 
 function normalizeIngredient(name: string): string {
-  return name.toLowerCase().replace(/fresh\s+/g, '').replace(/\s+/g, ' ').trim();
+  return name
+    .toLowerCase()
+    .replace(/fresh\s+/g, '')
+    .replace(/[.,/()'-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getIngredientTokens(name: string): string[] {
+  const stopWords = new Set([
+    'and', 'with', 'the', 'a', 'an', 'of', 'oz', 'dash', 'dashes', 'slice', 'wheel', 'twist', 'leaves', 'leaf'
+  ]);
+
+  return normalizeIngredient(name)
+    .split(' ')
+    .filter(token => token.length > 2 && !stopWords.has(token));
 }
 
 function ingredientMatches(cocktailIngredient: string, userIngredient: string): boolean {
   const ci = normalizeIngredient(cocktailIngredient);
   const ui = normalizeIngredient(userIngredient);
-  return ci.includes(ui) || ui.includes(ci);
+
+  if (ci === ui || ci.includes(ui) || ui.includes(ci)) return true;
+
+  const cocktailTokens = getIngredientTokens(cocktailIngredient);
+  const userTokens = getIngredientTokens(userIngredient);
+
+  return userTokens.some(token => cocktailTokens.includes(token));
 }
 
 export default function IngredientSearch() {
@@ -44,16 +65,21 @@ export default function IngredientSearch() {
   const matchedCocktails = useMemo(() => {
     if (myIngredients.length === 0) return [];
 
-    return cocktailsData
+    const uniqueCocktails = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
+
+    return uniqueCocktails
       .map(cocktail => {
-        const matched = cocktail.ingredients.filter(ci =>
+        const ingredientMatchesMap = cocktail.ingredients.map(ci =>
           myIngredients.some(ui => ingredientMatches(ci.item, ui))
-        ).length;
+        );
+        const matched = ingredientMatchesMap.filter(Boolean).length;
         const total = cocktail.ingredients.length;
         const pct = total > 0 ? matched / total : 0;
-        return { cocktail, matched, total, pct };
+        const hasAllIngredients = total > 0 && ingredientMatchesMap.every(Boolean);
+
+        return { cocktail, matched, total, pct, hasAllIngredients };
       })
-      .filter(r => exactMatch ? r.matched === r.total && r.total > 0 : r.matched > 0)
+      .filter(result => exactMatch ? result.hasAllIngredients : result.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
   }, [myIngredients, exactMatch]);
