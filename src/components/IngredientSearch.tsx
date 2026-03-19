@@ -238,13 +238,13 @@ export default function IngredientSearch() {
           </div>
           <div className="flex items-center gap-2 mt-3">
             <Switch
-              id="exact-match"
-              checked={exactMatch}
-              onCheckedChange={setExactMatch}
+              id="combine-all"
+              checked={combineAll}
+              onCheckedChange={setCombineAll}
               className="data-[state=checked]:bg-brass"
             />
-            <label htmlFor="exact-match" className="text-[11px] text-muted-foreground cursor-pointer select-none">
-              Only show cocktails I have <span className="text-brass font-medium">all</span> ingredients for
+            <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
+              Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
             </label>
           </div>
         </div>
