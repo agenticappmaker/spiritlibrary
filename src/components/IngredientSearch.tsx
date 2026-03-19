@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { X, ChefHat, Plus } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData from '@/data/cocktails';
 import CocktailCard from './CocktailCard';
