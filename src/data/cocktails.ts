@@ -989,7 +989,8 @@ import vodkaCocktails from './cocktails-vodka';
 import whiskeyCocktails from './cocktails-whiskey';
 import tequilaCocktails from './cocktails-tequila';
 import rumCocktails from './cocktails-rum';
-cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails);
+import regardingCocktails from './cocktails-regarding';
+cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails);
 
 export default cocktailsData;
 
