@@ -102,11 +102,13 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
   const ciSynonyms = synonymLookup.get(ci);
   if (ciSynonyms && ciSynonyms.has(ui)) return true;
 
-  // Token-based fallback
+  // Token-based fallback — require ALL user tokens to appear in the cocktail ingredient
   const cocktailTokens = getIngredientTokens(cocktailIngredient);
   const userTokens = getIngredientTokens(userIngredient);
 
-  return userTokens.some(token => cocktailTokens.includes(token));
+  if (userTokens.length > 0 && userTokens.every(token => cocktailTokens.includes(token))) return true;
+
+  return false;
 }
 
 export default function IngredientSearch() {
