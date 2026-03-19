@@ -29,6 +29,7 @@ export default function IngredientSearch() {
   const [input, setInput] = useState('');
   const [myIngredients, setMyIngredients] = useState<string[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
+  const [exactMatch, setExactMatch] = useState(false);
 
   // Suggestions based on current input
   const suggestions = useMemo(() => {
@@ -52,10 +53,10 @@ export default function IngredientSearch() {
         const pct = matched / total;
         return { cocktail, matched, total, pct };
       })
-      .filter(r => r.matched > 0)
+      .filter(r => exactMatch ? r.pct >= 1 : r.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
-  }, [myIngredients]);
+  }, [myIngredients, exactMatch]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
