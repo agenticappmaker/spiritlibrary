@@ -15,6 +15,52 @@ const allIngredientNames = Array.from(
   )
 ).sort();
 
+// Synonym groups — ingredients in the same group match each other
+const synonymGroups: string[][] = [
+  ['bourbon', 'whiskey', 'whisky', 'rye whiskey', 'rye', 'american whiskey', 'tennessee whiskey'],
+  ['scotch', 'scotch whisky', 'blended scotch', 'single malt scotch'],
+  ['honey', 'honey syrup', 'honey water'],
+  ['simple syrup', 'sugar syrup', 'sugar', 'superfine sugar', 'caster sugar', 'white sugar', 'granulated sugar'],
+  ['demerara syrup', 'demerara sugar', 'brown sugar syrup', 'raw sugar syrup'],
+  ['agave syrup', 'agave nectar', 'agave'],
+  ['lemon juice', 'lemon', 'fresh lemon juice', 'fresh lemon'],
+  ['lime juice', 'lime', 'fresh lime juice', 'fresh lime'],
+  ['orange juice', 'fresh orange juice', 'oj'],
+  ['grapefruit juice', 'fresh grapefruit juice'],
+  ['gin', 'london dry gin', 'dry gin'],
+  ['vodka', 'plain vodka'],
+  ['white rum', 'light rum', 'silver rum', 'blanco rum'],
+  ['dark rum', 'black rum', 'aged rum', 'jamaican rum', 'demerara rum'],
+  ['gold rum', 'amber rum', 'añejo rum'],
+  ['tequila', 'blanco tequila', 'silver tequila'],
+  ['tequila reposado', 'reposado tequila', 'reposado'],
+  ['mezcal', 'mezcal joven'],
+  ['cointreau', 'triple sec', 'orange liqueur', 'orange curaçao', 'curacao', 'curaçao'],
+  ['sweet vermouth', 'rosso vermouth', 'red vermouth'],
+  ['dry vermouth', 'french vermouth', 'white vermouth'],
+  ['club soda', 'soda water', 'sparkling water', 'seltzer', 'carbonated water'],
+  ['prosecco', 'champagne', 'sparkling wine', 'cava', 'brut'],
+  ['cream', 'heavy cream', 'heavy whipping cream', 'whipping cream'],
+  ['egg white', 'aquafaba'],
+  ['coffee liqueur', 'kahlúa', 'kahlua', 'mr black'],
+  ['campari', 'bitter liqueur'],
+  ['angostura bitters', 'aromatic bitters'],
+  ['maraschino liqueur', 'luxardo maraschino', 'maraschino'],
+  ['elderflower liqueur', 'st-germain', 'st germain'],
+  ['green chartreuse', 'chartreuse'],
+  ['coconut cream', 'cream of coconut', 'coco lopez'],
+  ['pineapple juice', 'fresh pineapple juice'],
+];
+
+// Build a lookup: normalized ingredient → set of synonyms
+const synonymLookup = new Map<string, Set<string>>();
+for (const group of synonymGroups) {
+  const normalizedGroup = new Set(group.map(g => g.toLowerCase().trim()));
+  for (const item of normalizedGroup) {
+    synonymLookup.set(item, normalizedGroup);
+  }
+}
+
 function normalizeIngredient(name: string): string {
   return name
     .toLowerCase()
@@ -38,8 +84,25 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
   const ci = normalizeIngredient(cocktailIngredient);
   const ui = normalizeIngredient(userIngredient);
 
+  // Direct match
   if (ci === ui || ci.includes(ui) || ui.includes(ci)) return true;
 
+  // Synonym match
+  const uiSynonyms = synonymLookup.get(ui);
+  if (uiSynonyms) {
+    // Check if the cocktail ingredient matches any synonym
+    if (uiSynonyms.has(ci)) return true;
+    // Check if any synonym is contained in the cocktail ingredient
+    for (const syn of uiSynonyms) {
+      if (ci.includes(syn) || syn.includes(ci)) return true;
+    }
+  }
+
+  // Also check if the cocktail ingredient has synonyms that match the user input
+  const ciSynonyms = synonymLookup.get(ci);
+  if (ciSynonyms && ciSynonyms.has(ui)) return true;
+
+  // Token-based fallback
   const cocktailTokens = getIngredientTokens(cocktailIngredient);
   const userTokens = getIngredientTokens(userIngredient);
 
@@ -50,7 +113,7 @@ export default function IngredientSearch() {
   const [input, setInput] = useState('');
   const [myIngredients, setMyIngredients] = useState<string[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
-  const [exactMatch, setExactMatch] = useState(false);
+  const [combineAll, setCombineAll] = useState(false);
 
   // Suggestions based on current input
   const suggestions = useMemo(() => {
@@ -75,14 +138,17 @@ export default function IngredientSearch() {
         const matched = ingredientMatchesMap.filter(Boolean).length;
         const total = cocktail.ingredients.length;
         const pct = total > 0 ? matched / total : 0;
-        const hasAllIngredients = total > 0 && ingredientMatchesMap.every(Boolean);
 
-        return { cocktail, matched, total, pct, hasAllIngredients };
+        // "Combine all" = every user ingredient must appear in the recipe
+        const recipeUsesAllUserIngredients = myIngredients.every(ui =>
+          cocktail.ingredients.some(ci => ingredientMatches(ci.item, ui))
+        );
+
+        return { cocktail, matched, total, pct, recipeUsesAllUserIngredients };
       })
-      .filter(result => exactMatch ? result.hasAllIngredients : result.matched > 0)
+      .filter(result => combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
-      .slice(0, 50);
-  }, [myIngredients, exactMatch]);
+  }, [myIngredients, combineAll]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
@@ -172,13 +238,13 @@ export default function IngredientSearch() {
           </div>
           <div className="flex items-center gap-2 mt-3">
             <Switch
-              id="exact-match"
-              checked={exactMatch}
-              onCheckedChange={setExactMatch}
+              id="combine-all"
+              checked={combineAll}
+              onCheckedChange={setCombineAll}
               className="data-[state=checked]:bg-brass"
             />
-            <label htmlFor="exact-match" className="text-[11px] text-muted-foreground cursor-pointer select-none">
-              Only show cocktails I have <span className="text-brass font-medium">all</span> ingredients for
+            <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
+              Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
             </label>
           </div>
         </div>
