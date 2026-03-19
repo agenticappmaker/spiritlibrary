@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { X, ChefHat, Plus } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData from '@/data/cocktails';
 import CocktailCard from './CocktailCard';
@@ -28,6 +29,7 @@ export default function IngredientSearch() {
   const [input, setInput] = useState('');
   const [myIngredients, setMyIngredients] = useState<string[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
+  const [exactMatch, setExactMatch] = useState(false);
 
   // Suggestions based on current input
   const suggestions = useMemo(() => {
@@ -51,10 +53,10 @@ export default function IngredientSearch() {
         const pct = matched / total;
         return { cocktail, matched, total, pct };
       })
-      .filter(r => r.matched > 0)
+      .filter(r => exactMatch ? r.pct >= 1 : r.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
-  }, [myIngredients]);
+  }, [myIngredients, exactMatch]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
@@ -141,6 +143,17 @@ export default function IngredientSearch() {
             >
               Clear all
             </button>
+          </div>
+          <div className="flex items-center gap-2 mt-3">
+            <Switch
+              id="exact-match"
+              checked={exactMatch}
+              onCheckedChange={setExactMatch}
+              className="data-[state=checked]:bg-brass"
+            />
+            <label htmlFor="exact-match" className="text-[11px] text-muted-foreground cursor-pointer select-none">
+              Only show cocktails I have <span className="text-brass font-medium">all</span> ingredients for
+            </label>
           </div>
         </div>
       )}
