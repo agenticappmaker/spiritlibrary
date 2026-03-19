@@ -384,6 +384,148 @@ const substitutions: Substitution[] = [
     { name: "Lingonberry juice", notes: "Scandinavian berry. Very similar.", quality: "excellent" },
     { name: "Tart cherry juice", notes: "Different color but similar tartness.", quality: "good" },
   ]},
+
+  // === DEATH & CO "AT HOME" APPROVED SWAPS ===
+
+  // Suze
+  { ingredient: "suze", category: "Amaro/Aperitif", substitutes: [
+    { name: "Salers Gentiane", notes: "Another gentiane liqueur. Closest match available.", quality: "excellent" },
+    { name: "Avèze", notes: "French gentiane aperitif. Similar bitterness and earthiness.", quality: "excellent" },
+    { name: "Campari (use less)", notes: "Different bitter profile but fills the same structural role. Use 2/3 amount.", quality: "acceptable" },
+    { name: "Aperol + dry vermouth", notes: "Mix 1:1 for a lighter, less bitter approximation.", quality: "acceptable" },
+  ]},
+
+  // Cynar
+  { ingredient: "cynar", category: "Amaro/Aperitif", substitutes: [
+    { name: "Amaro Nonino", notes: "Lighter and sweeter but similar bittersweet role.", quality: "good" },
+    { name: "Amaro Averna", notes: "Darker and heavier. Works in stirred drinks.", quality: "good" },
+    { name: "Fernet-Branca (use half)", notes: "Much more intense. Use sparingly.", quality: "acceptable" },
+    { name: "Amaro Montenegro", notes: "More floral, less vegetal. Pleasant swap.", quality: "good" },
+  ]},
+
+  // Amaro Montenegro
+  { ingredient: "amaro montenegro", category: "Amaro/Aperitif", substitutes: [
+    { name: "Amaro Nonino", notes: "More citrusy but similar bittersweet balance.", quality: "excellent" },
+    { name: "Amaro Meletti", notes: "Slightly more anise-forward. Good in spritzes.", quality: "good" },
+    { name: "Cynar + honey syrup", notes: "Add sweetness to cut Cynar's vegetal edge.", quality: "acceptable" },
+  ]},
+
+  // Ancho Reyes
+  { ingredient: "ancho reyes", category: "Chili Liqueur", substitutes: [
+    { name: "Ancho Reyes Verde", notes: "Green chili version. Brighter, less smoky.", quality: "good" },
+    { name: "Jalapeño-infused tequila + agave", notes: "DIY spicy-sweet substitute. 2 oz tequila + 0.5 oz agave.", quality: "good" },
+    { name: "Chipotle hot sauce + simple syrup", notes: "A few dashes mixed with syrup approximates the heat.", quality: "acceptable" },
+  ]},
+
+  // Crème de violette
+  { ingredient: "crème de violette", category: "Floral Liqueur", substitutes: [
+    { name: "Rothman & Winter Crème de Violette", notes: "The bartender standard. If subbing another brand.", quality: "excellent" },
+    { name: "Parfait Amour", notes: "Similar floral-citrus profile, more purple. Works in Aviations.", quality: "good" },
+    { name: "Lavender syrup + dry curaçao", notes: "Floral + citrus approximation. Not identical but interesting.", quality: "acceptable" },
+  ]},
+
+  // Cinnamon syrup
+  { ingredient: "cinnamon syrup", category: "Sweetener", substitutes: [
+    { name: "Simple syrup + ground cinnamon", notes: "Shake with a pinch of cinnamon. Strain well.", quality: "good" },
+    { name: "Allspice dram", notes: "Provides warm spice. More complex than pure cinnamon.", quality: "good" },
+    { name: "Demerara syrup + cinnamon stick stir", notes: "Stir with cinnamon stick before use. Quick infusion.", quality: "good" },
+  ]},
+
+  // Ginger syrup
+  { ingredient: "ginger syrup", category: "Sweetener", substitutes: [
+    { name: "Simple syrup + muddled ginger", notes: "Muddle fresh ginger with syrup in shaker.", quality: "excellent" },
+    { name: "Ginger beer (reduce soda)", notes: "Already sweetened and gingery. Adjust liquid balance.", quality: "good" },
+    { name: "Domaine de Canton", notes: "Ginger liqueur. Adds alcohol but strong ginger flavor.", quality: "good" },
+  ]},
+
+  // Passion fruit syrup
+  { ingredient: "passion fruit syrup", category: "Sweetener", substitutes: [
+    { name: "Passion fruit purée + simple syrup", notes: "Mix 2:1 for a fresh homemade version.", quality: "excellent" },
+    { name: "Passoã + simple syrup", notes: "Passion fruit liqueur blended with syrup.", quality: "good" },
+    { name: "Mango purée + lime juice", notes: "Different fruit but similar tropical sweetness.", quality: "acceptable" },
+  ]},
+
+  // Punt e Mes
+  { ingredient: "punt e mes", category: "Vermouth", substitutes: [
+    { name: "Sweet vermouth + dash of Campari", notes: "Approximates Punt e Mes's extra bitterness.", quality: "excellent" },
+    { name: "Carpano Antica Formula", notes: "Rich and vanilla-forward. Less bitter.", quality: "good" },
+    { name: "Cocchi Vermouth di Torino + Fernet", notes: "Add a barspoon of Fernet for bitterness.", quality: "good" },
+  ]},
+
+  // Cocchi Americano
+  { ingredient: "cocchi americano", category: "Aromatized Wine", substitutes: [
+    { name: "Lillet Blanc", notes: "Sweeter, less quinine. The common swap.", quality: "good" },
+    { name: "Dry vermouth + tonic syrup", notes: "Add quinine bitterness to dry vermouth.", quality: "good" },
+    { name: "Kina L'Aéro d'Or", notes: "Another quinquina. Similar bittersweet profile.", quality: "excellent" },
+  ]},
+
+  // Licor 43
+  { ingredient: "licor 43", category: "Herbal Liqueur", substitutes: [
+    { name: "Vanilla syrup + Cointreau", notes: "Mix for vanilla-citrus sweetness.", quality: "good" },
+    { name: "Galliano", notes: "Similar vanilla-herbal character. Italian cousin.", quality: "excellent" },
+    { name: "Tuaca", notes: "Italian vanilla-citrus liqueur. Very close profile.", quality: "excellent" },
+  ]},
+
+  // Génépy
+  { ingredient: "génépy", category: "Herbal Liqueur", substitutes: [
+    { name: "Green Chartreuse (use less)", notes: "Much stronger. Use half the amount.", quality: "good" },
+    { name: "Yellow Chartreuse", notes: "Milder, closer to génépy's gentleness.", quality: "excellent" },
+    { name: "Absinthe (use much less)", notes: "A few drops provide similar alpine herbal character.", quality: "acceptable" },
+  ]},
+
+  // Velvet Falernum
+  { ingredient: "velvet falernum", category: "Spiced Syrup/Liqueur", substitutes: [
+    { name: "Orgeat + lime + allspice", notes: "Combine for almond-lime-spice profile.", quality: "good" },
+    { name: "Falernum syrup (non-alcoholic)", notes: "BG Reynolds or homemade. Same flavor, no alcohol.", quality: "excellent" },
+    { name: "Allspice dram + simple syrup + lime zest", notes: "Spice-forward approximation.", quality: "good" },
+  ]},
+
+  // Crème de cassis
+  { ingredient: "crème de cassis", category: "Fruit Liqueur", substitutes: [
+    { name: "Chambord", notes: "Raspberry-based but similar berry sweetness and color.", quality: "good" },
+    { name: "Blackberry syrup", notes: "Non-alcoholic alternative with similar tartness.", quality: "good" },
+    { name: "Pomegranate syrup + berry liqueur", notes: "Approximates the dark fruit sweetness.", quality: "acceptable" },
+  ]},
+
+  // Apricot brandy / liqueur
+  { ingredient: "apricot brandy", category: "Fruit Liqueur", substitutes: [
+    { name: "Rothman & Winter Orchard Apricot", notes: "The gold standard. Less sweet, more natural.", quality: "excellent" },
+    { name: "Peach liqueur", notes: "Similar stone fruit character. Slightly different flavor.", quality: "good" },
+    { name: "Apricot preserves + vodka", notes: "Shake with preserves for a DIY version. Strain well.", quality: "acceptable" },
+  ]},
+
+  // Crème de mûre
+  { ingredient: "crème de mûre", category: "Fruit Liqueur", substitutes: [
+    { name: "Chambord", notes: "Raspberry-based. Similar berry role in cocktails.", quality: "good" },
+    { name: "Blackberry syrup + vodka", notes: "Muddle blackberries with syrup for a fresh swap.", quality: "good" },
+    { name: "Crème de cassis", notes: "Blackcurrant instead of blackberry. Close enough.", quality: "good" },
+  ]},
+
+  // Sherry
+  { ingredient: "fino sherry", category: "Fortified Wine", substitutes: [
+    { name: "Manzanilla sherry", notes: "Lighter and more coastal. Very close match.", quality: "excellent" },
+    { name: "Dry vermouth", notes: "Different but fills a similar role in cocktails.", quality: "good" },
+    { name: "Amontillado sherry", notes: "Nuttier and richer. Use slightly less.", quality: "good" },
+  ]},
+  { ingredient: "amontillado sherry", category: "Fortified Wine", substitutes: [
+    { name: "Oloroso sherry", notes: "Richer and darker. Use slightly less.", quality: "good" },
+    { name: "Fino sherry + sweet vermouth", notes: "Mix 3:1 for a drier approximation.", quality: "good" },
+    { name: "Dry Marsala", notes: "Sicilian fortified wine with similar nutty depth.", quality: "good" },
+  ]},
+
+  // Chocolate bitters
+  { ingredient: "chocolate bitters", category: "Bitters", substitutes: [
+    { name: "Aztec chocolate bitters (Fee Brothers)", notes: "Cacao with cinnamon and chili. More complex.", quality: "excellent" },
+    { name: "Mole bitters", notes: "Similar dark, spiced profile with chocolate undertones.", quality: "excellent" },
+    { name: "Angostura bitters + crème de cacao", notes: "A dash of each approximates the flavor.", quality: "good" },
+  ]},
+
+  // Pisco
+  { ingredient: "pisco", category: "Spirit", substitutes: [
+    { name: "Singani", notes: "Bolivian grape brandy. Very similar production.", quality: "excellent" },
+    { name: "White grape eau-de-vie", notes: "Clean grape spirit. Close in character.", quality: "good" },
+    { name: "Blanco tequila", notes: "Very different but works structurally in sours.", quality: "acceptable" },
+  ]},
 ];
 
 // Build a search index
