@@ -50,10 +50,10 @@ export default function IngredientSearch() {
           myIngredients.some(ui => ingredientMatches(ci.item, ui))
         ).length;
         const total = cocktail.ingredients.length;
-        const pct = matched / total;
+        const pct = total > 0 ? matched / total : 0;
         return { cocktail, matched, total, pct };
       })
-      .filter(r => exactMatch ? r.pct >= 1 : r.matched > 0)
+      .filter(r => exactMatch ? r.matched === r.total && r.total > 0 : r.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
   }, [myIngredients, exactMatch]);
@@ -182,7 +182,7 @@ export default function IngredientSearch() {
                     onAddToList={setAddToListCocktailId}
                   />
                   {/* Match badge */}
-                  <div className={`absolute top-1.5 right-1.5 z-40 text-[10px] px-1.5 py-0.5 rounded-full font-medium backdrop-blur-md ${
+                  <div className={`absolute top-1.5 right-1.5 z-10 text-[10px] px-1.5 py-0.5 rounded-full font-medium backdrop-blur-md pointer-events-none ${
                     pct >= 0.8 ? 'bg-green-800/70 text-green-300' :
                     pct >= 0.5 ? 'bg-yellow-800/70 text-yellow-300' :
                     'bg-muted/70 text-muted-foreground'
