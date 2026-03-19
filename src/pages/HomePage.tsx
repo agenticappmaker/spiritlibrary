@@ -233,16 +233,16 @@ export default function HomePage() {
 
       {/* Grid */}
       <div className="px-4">
-        <motion.div layout className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {displayCocktails.map((cocktail, i) => (
             <CocktailCard
               key={cocktail.id}
               cocktail={cocktail}
-              index={i}
+              index={Math.min(i, 20)}
               onAddToList={setAddToListCocktailId}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {displayCocktails.length === 0 && (
