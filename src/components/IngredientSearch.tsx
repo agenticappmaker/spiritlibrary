@@ -50,10 +50,10 @@ export default function IngredientSearch() {
           myIngredients.some(ui => ingredientMatches(ci.item, ui))
         ).length;
         const total = cocktail.ingredients.length;
-        const pct = matched / total;
+        const pct = total > 0 ? matched / total : 0;
         return { cocktail, matched, total, pct };
       })
-      .filter(r => exactMatch ? r.pct >= 1 : r.matched > 0)
+      .filter(r => exactMatch ? r.matched === r.total && r.total > 0 : r.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
   }, [myIngredients, exactMatch]);
