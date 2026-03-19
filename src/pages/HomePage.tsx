@@ -31,8 +31,9 @@ export default function HomePage() {
   );
 
   const filtered = useMemo(() => {
+    const lower = search.toLowerCase();
     let result = cocktailsData.filter(c => {
-      if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
+      if (search && !c.name.toLowerCase().includes(lower)) return false;
       if (selectedSpirits.length > 0 && !selectedSpirits.includes(c.spirit)) return false;
       if (selectedDifficulty && c.difficulty !== selectedDifficulty) return false;
       if (selectedCategory && c.category !== selectedCategory) return false;
@@ -40,6 +41,20 @@ export default function HomePage() {
     });
 
     result.sort((a, b) => {
+      // When searching, prioritize: exact match > starts with > contains, then alphabetical
+      if (search) {
+        const aLower = a.name.toLowerCase();
+        const bLower = b.name.toLowerCase();
+        const aExact = aLower === lower;
+        const bExact = bLower === lower;
+        if (aExact !== bExact) return aExact ? -1 : 1;
+        const aStarts = aLower.startsWith(lower);
+        const bStarts = bLower.startsWith(lower);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        // Shorter names rank higher (closer match)
+        if (aLower.length !== bLower.length) return aLower.length - bLower.length;
+        return aLower.localeCompare(bLower);
+      }
       if (sortBy === 'name') return a.name.localeCompare(b.name);
       if (sortBy === 'difficulty') {
         const order = { Easy: 0, Intermediate: 1, Advanced: 2 };
