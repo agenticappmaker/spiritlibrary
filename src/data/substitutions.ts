@@ -157,6 +157,13 @@ const substitutions: Substitution[] = [
     { name: "Other fernet (Luxardo, R. Jelínek)", notes: "Similar bitter-herbal profile from different producers.", quality: "excellent" },
     { name: "Amaro Montenegro + mint", notes: "Lighter but captures the herbal-bitter notes.", quality: "acceptable" },
   ]},
+  { ingredient: "amaro nonino", category: "Amaro/Aperitif", substitutes: [
+    { name: "Amaretto", notes: "Sweeter with almond notes. Add a dash of bitters to compensate for lost herbal complexity.", quality: "good" },
+    { name: "Amaro Montenegro", notes: "Lighter and floral but similar bittersweet balance.", quality: "excellent" },
+    { name: "Cynar", notes: "More vegetal and bitter. Use slightly less and add a touch of honey.", quality: "good" },
+    { name: "Amaro Averna", notes: "Darker and more syrupy. Works well in stirred drinks like Paper Plane riffs.", quality: "good" },
+    { name: "Cardamaro", notes: "Wine-based amaro with artichoke and cardoon. Lighter but interesting swap.", quality: "acceptable" },
+  ]},
 
   // === ABSINTHE ===
   { ingredient: "absinthe", category: "Anise Spirit", substitutes: [
