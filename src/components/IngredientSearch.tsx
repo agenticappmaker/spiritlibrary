@@ -16,13 +16,34 @@ const allIngredientNames = Array.from(
 ).sort();
 
 function normalizeIngredient(name: string): string {
-  return name.toLowerCase().replace(/fresh\s+/g, '').replace(/\s+/g, ' ').trim();
+  return name
+    .toLowerCase()
+    .replace(/fresh\s+/g, '')
+    .replace(/[.,/()'-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getIngredientTokens(name: string): string[] {
+  const stopWords = new Set([
+    'and', 'with', 'the', 'a', 'an', 'of', 'oz', 'dash', 'dashes', 'slice', 'wheel', 'twist', 'leaves', 'leaf'
+  ]);
+
+  return normalizeIngredient(name)
+    .split(' ')
+    .filter(token => token.length > 2 && !stopWords.has(token));
 }
 
 function ingredientMatches(cocktailIngredient: string, userIngredient: string): boolean {
   const ci = normalizeIngredient(cocktailIngredient);
   const ui = normalizeIngredient(userIngredient);
-  return ci.includes(ui) || ui.includes(ci);
+
+  if (ci === ui || ci.includes(ui) || ui.includes(ci)) return true;
+
+  const cocktailTokens = getIngredientTokens(cocktailIngredient);
+  const userTokens = getIngredientTokens(userIngredient);
+
+  return userTokens.some(token => cocktailTokens.includes(token));
 }
 
 export default function IngredientSearch() {
