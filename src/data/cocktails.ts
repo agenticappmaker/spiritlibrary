@@ -995,9 +995,12 @@ import diffordsCocktails2 from './cocktails-diffords-2';
 import diffordsCocktails3 from './cocktails-diffords-3';
 import diffordsCocktails4 from './cocktails-diffords-4';
 import diffordsCocktails5 from './cocktails-diffords-5';
+
 cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails, ...diffordsCocktails, ...diffordsCocktails2, ...diffordsCocktails3, ...diffordsCocktails4, ...diffordsCocktails5);
 
-export default cocktailsData;
+const uniqueCocktailsData = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
+
+export default uniqueCocktailsData;
 
 // Helper to get unique spirits
 export const allSpirits: Spirit[] = ['Bourbon', 'Gin', 'Rum', 'Tequila', 'Vodka', 'Mezcal', 'Brandy', 'Whiskey', 'Champagne', 'Scotch', 'Rye', 'Pisco', 'Absinthe', 'Aperol', 'Amaro'];

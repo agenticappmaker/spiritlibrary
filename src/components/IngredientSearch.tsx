@@ -65,16 +65,21 @@ export default function IngredientSearch() {
   const matchedCocktails = useMemo(() => {
     if (myIngredients.length === 0) return [];
 
-    return cocktailsData
+    const uniqueCocktails = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
+
+    return uniqueCocktails
       .map(cocktail => {
-        const matched = cocktail.ingredients.filter(ci =>
+        const ingredientMatchesMap = cocktail.ingredients.map(ci =>
           myIngredients.some(ui => ingredientMatches(ci.item, ui))
-        ).length;
+        );
+        const matched = ingredientMatchesMap.filter(Boolean).length;
         const total = cocktail.ingredients.length;
         const pct = total > 0 ? matched / total : 0;
-        return { cocktail, matched, total, pct };
+        const hasAllIngredients = total > 0 && ingredientMatchesMap.every(Boolean);
+
+        return { cocktail, matched, total, pct, hasAllIngredients };
       })
-      .filter(r => exactMatch ? r.matched === r.total && r.total > 0 : r.matched > 0)
+      .filter(result => exactMatch ? result.hasAllIngredients : result.matched > 0)
       .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
       .slice(0, 50);
   }, [myIngredients, exactMatch]);
