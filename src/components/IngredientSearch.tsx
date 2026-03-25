@@ -3,8 +3,21 @@ import { X, ChefHat, Plus, ArrowRight } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData, { FlavorTag } from '@/data/cocktails';
+import substitutionsData from '@/data/substitutions';
 import CocktailCard from './CocktailCard';
 import AddToListModal from './AddToListModal';
+
+// Build a lookup: ingredient → substitutes with good+ quality
+const subLookup = new Map<string, Set<string>>();
+for (const sub of substitutionsData) {
+  const key = sub.ingredient.toLowerCase();
+  const goodSubs = new Set(
+    sub.substitutes
+      .filter(s => s.quality === 'excellent' || s.quality === 'good')
+      .map(s => s.name.toLowerCase())
+  );
+  subLookup.set(key, goodSubs);
+}
 
 const allFlavorTags: FlavorTag[] = [
   'Spirit-forward', 'Citrus', 'Sweet', 'Bitter', 'Herbal', 'Smoky',
@@ -114,23 +127,46 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
   // Synonym match
   const uiSynonyms = synonymLookup.get(ui);
   if (uiSynonyms) {
-    // Check if the cocktail ingredient matches any synonym
     if (uiSynonyms.has(ci)) return true;
-    // Check if any synonym is contained in the cocktail ingredient
     for (const syn of uiSynonyms) {
       if (ci.includes(syn) || syn.includes(ci)) return true;
     }
   }
 
-  // Also check if the cocktail ingredient has synonyms that match the user input
   const ciSynonyms = synonymLookup.get(ci);
   if (ciSynonyms && ciSynonyms.has(ui)) return true;
 
-  // Token-based fallback — require ALL user tokens to appear in the cocktail ingredient
+  // Token-based fallback
   const cocktailTokens = getIngredientTokens(cocktailIngredient);
   const userTokens = getIngredientTokens(userIngredient);
 
   if (userTokens.length > 0 && userTokens.every(token => cocktailTokens.includes(token))) return true;
+
+  return false;
+}
+
+// Check if userIngredient can substitute for cocktailIngredient (good+ quality)
+function ingredientMatchesWithSubs(cocktailIngredient: string, userIngredient: string): boolean {
+  if (ingredientMatches(cocktailIngredient, userIngredient)) return true;
+
+  const ci = normalizeIngredient(cocktailIngredient);
+  const ui = normalizeIngredient(userIngredient);
+
+  // Check if the cocktail ingredient has subs, and the user ingredient is one of them
+  const ciSubs = subLookup.get(ci);
+  if (ciSubs) {
+    for (const sub of ciSubs) {
+      if (ingredientMatches(sub, ui)) return true;
+    }
+  }
+
+  // Check if the user ingredient has subs, and the cocktail ingredient is one of them
+  const uiSubs = subLookup.get(ui);
+  if (uiSubs) {
+    for (const sub of uiSubs) {
+      if (ingredientMatches(cocktailIngredient, sub)) return true;
+    }
+  }
 
   return false;
 }
@@ -177,7 +213,7 @@ export default function IngredientSearch() {
         const pct = total > 0 ? matched / total : 0;
 
         const recipeUsesAllUserIngredients = myIngredients.length === 0 || myIngredients.every(ui =>
-          cocktail.ingredients.some(ci => ingredientMatches(ci.item, ui))
+          cocktail.ingredients.some(ci => ingredientMatchesWithSubs(ci.item, ui))
         );
 
         // Flavor tag matching
