@@ -38,6 +38,7 @@ export default function HomePage() {
       if (selectedSpirits.length > 0 && !selectedSpirits.includes(c.spirit)) return false;
       if (selectedDifficulty && c.difficulty !== selectedDifficulty) return false;
       if (selectedCategory && c.category !== selectedCategory) return false;
+      if (selectedFlavors.length > 0 && !selectedFlavors.every(f => c.flavorTags?.includes(f))) return false;
       return true;
     });
 
