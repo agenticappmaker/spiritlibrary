@@ -26,10 +26,17 @@ export default function HomePage() {
     []
   );
 
-  const randomPick = useMemo(() =>
-    cocktailsData[Math.floor(Math.random() * cocktailsData.length)],
-    []
+  const [randomPick, setRandomPick] = useState(() =>
+    cocktailsData[Math.floor(Math.random() * cocktailsData.length)]
   );
+
+  const shufflePick = () => {
+    let next;
+    do {
+      next = cocktailsData[Math.floor(Math.random() * cocktailsData.length)];
+    } while (next.id === randomPick.id && cocktailsData.length > 1);
+    setRandomPick(next);
+  };
 
   const filtered = useMemo(() => {
     const lower = search.toLowerCase();
@@ -230,9 +237,12 @@ export default function HomePage() {
       {/* Tonight's Pick */}
       {!isSearching && (
         <div className="px-4 mb-6">
-          <p className="text-[10px] uppercase tracking-wider text-brass mb-2 flex items-center gap-1.5">
-            <Shuffle className="w-3 h-3" /> Tonight's Pick
-          </p>
+          <button
+            onClick={shufflePick}
+            className="text-[10px] uppercase tracking-wider text-brass mb-2 flex items-center gap-1.5 hover:text-cream transition-colors"
+          >
+            <Shuffle className="w-3 h-3" /> Shuffle
+          </button>
           <div className="max-w-[200px]">
             <CocktailCard
               cocktail={randomPick}
