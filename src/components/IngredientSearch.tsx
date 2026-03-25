@@ -124,7 +124,16 @@ export default function IngredientSearch() {
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [combineAll, setCombineAll] = useState(false);
 
-  // Suggestions based on current input
+  // Flavor tag suggestions based on input
+  const flavorSuggestions = useMemo(() => {
+    if (input.length < 2) return [];
+    const lower = input.toLowerCase();
+    return allFlavorTags.filter(tag =>
+      tag.toLowerCase().includes(lower) && !myFlavorTags.includes(tag)
+    );
+  }, [input, myFlavorTags]);
+
+  // Ingredient suggestions based on current input
   const suggestions = useMemo(() => {
     if (input.length < 2) return [];
     const lower = input.toLowerCase();
@@ -133,9 +142,9 @@ export default function IngredientSearch() {
       .slice(0, 8);
   }, [input, myIngredients]);
 
-  // Find cocktails matching user's ingredients
+  // Find cocktails matching user's ingredients and flavor tags
   const matchedCocktails = useMemo(() => {
-    if (myIngredients.length === 0) return [];
+    if (myIngredients.length === 0 && myFlavorTags.length === 0) return [];
 
     const uniqueCocktails = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
 
@@ -148,16 +157,31 @@ export default function IngredientSearch() {
         const total = cocktail.ingredients.length;
         const pct = total > 0 ? matched / total : 0;
 
-        // "Combine all" = every user ingredient must appear in the recipe
-        const recipeUsesAllUserIngredients = myIngredients.every(ui =>
+        const recipeUsesAllUserIngredients = myIngredients.length === 0 || myIngredients.every(ui =>
           cocktail.ingredients.some(ci => ingredientMatches(ci.item, ui))
         );
 
-        return { cocktail, matched, total, pct, recipeUsesAllUserIngredients };
+        // Flavor tag matching
+        const flavorMatchCount = myFlavorTags.filter(tag =>
+          cocktail.flavorTags?.includes(tag)
+        ).length;
+        const allFlavorsMatch = myFlavorTags.length === 0 || myFlavorTags.every(tag =>
+          cocktail.flavorTags?.includes(tag)
+        );
+
+        return { cocktail, matched, total, pct, recipeUsesAllUserIngredients, flavorMatchCount, allFlavorsMatch };
       })
-      .filter(result => combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0)
-      .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
-  }, [myIngredients, combineAll]);
+      .filter(result => {
+        const ingredientPass = myIngredients.length === 0
+          ? true
+          : combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0;
+        const flavorPass = myFlavorTags.length === 0
+          ? true
+          : result.flavorMatchCount > 0;
+        return ingredientPass && flavorPass;
+      })
+      .sort((a, b) => b.pct - a.pct || b.flavorMatchCount - a.flavorMatchCount || b.matched - a.matched)
+  }, [myIngredients, myFlavorTags, combineAll]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
