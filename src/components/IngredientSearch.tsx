@@ -385,11 +385,25 @@ export default function IngredientSearch() {
             Clear all
           </button>
           {myIngredients.length > 0 && (
-            <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center gap-2 mt-3 relative">
+              <AnimatePresence>
+                {showCombineHint && !combineAll && (
+                  <motion.button
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    onClick={() => { setCombineAll(true); setShowCombineHint(false); }}
+                    className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors mr-1 animate-pulse"
+                    title="Enable combine ALL"
+                  >
+                    <ArrowRight className="w-3 h-3" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
               <Switch
                 id="combine-all"
                 checked={combineAll}
-                onCheckedChange={setCombineAll}
+                onCheckedChange={(v) => { setCombineAll(v); setShowCombineHint(false); }}
                 className="data-[state=checked]:bg-brass"
               />
               <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
