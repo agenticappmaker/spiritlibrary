@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { X, ChefHat, Plus } from 'lucide-react';
+import { useState, useMemo, useCallback } from 'react';
+import { X, ChefHat, Plus, ArrowRight } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData, { FlavorTag } from '@/data/cocktails';
@@ -123,6 +123,7 @@ export default function IngredientSearch() {
   const [myFlavorTags, setMyFlavorTags] = useState<FlavorTag[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [combineAll, setCombineAll] = useState(false);
+  const [showCombineHint, setShowCombineHint] = useState(false);
 
   // Flavor tag suggestions based on input
   const flavorSuggestions = useMemo(() => {
@@ -195,9 +196,80 @@ export default function IngredientSearch() {
     setMyIngredients(prev => prev.filter(i => i !== name));
   };
 
+  // Parse a sentence to extract known ingredients and flavor tags
+  const parseSentence = useCallback((sentence: string) => {
+    const lower = sentence.toLowerCase();
+    const stopWords = new Set(['i', 'have', 'got', 'and', 'with', 'some', 'a', 'an', 'the', 'my', 'make', 'me', 'can', 'what', 'do', 'to', 'of', 'in', 'on', 'is', 'it', 'that', 'this', 'using', 'use']);
+
+    const foundIngredients: string[] = [];
+    const foundFlavors: FlavorTag[] = [];
+
+    // Check for multi-word ingredient matches first (longest match wins)
+    let remaining = lower;
+    const sortedNames = [...allIngredientNames].sort((a, b) => b.length - a.length);
+    for (const name of sortedNames) {
+      if (remaining.includes(name) && !myIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(name))) {
+        foundIngredients.push(name);
+        remaining = remaining.replace(name, ' ');
+      }
+    }
+
+    // Check for synonym group matches on remaining words
+    const remainingWords = remaining.split(/[\s,]+/).filter(w => w.length > 2 && !stopWords.has(w));
+    for (const word of remainingWords) {
+      const syns = synonymLookup.get(word);
+      if (syns) {
+        const matchedName = allIngredientNames.find(n => syns.has(n) || n === word);
+        if (matchedName && !foundIngredients.includes(matchedName) && !myIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(matchedName))) {
+          foundIngredients.push(matchedName);
+        }
+      }
+    }
+
+    // Check for flavor tags
+    for (const tag of allFlavorTags) {
+      if (lower.includes(tag.toLowerCase()) && !myFlavorTags.includes(tag)) {
+        foundFlavors.push(tag);
+      }
+    }
+
+    return { foundIngredients, foundFlavors };
+  }, [myIngredients, myFlavorTags]);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
+      const trimmed = input.trim();
+
+      // Check if this looks like a sentence (contains spaces and multiple words)
+      const words = trimmed.split(/[\s,]+/).filter(w => w.length > 0);
+      if (words.length >= 2) {
+        const { foundIngredients, foundFlavors } = parseSentence(trimmed);
+        if (foundIngredients.length > 0 || foundFlavors.length > 0) {
+          const newIngredients = [...myIngredients];
+          for (const ing of foundIngredients) {
+            if (!newIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(ing))) {
+              newIngredients.push(ing);
+            }
+          }
+          setMyIngredients(newIngredients);
+
+          const newFlavors = [...myFlavorTags];
+          for (const f of foundFlavors) {
+            if (!newFlavors.includes(f)) newFlavors.push(f);
+          }
+          setMyFlavorTags(newFlavors);
+
+          setInput('');
+          // Show combine hint if multiple ingredients were added and combineAll is off
+          if (foundIngredients.length >= 2 && !combineAll) {
+            setShowCombineHint(true);
+          }
+          return;
+        }
+      }
+
+      // Single-word fallback
       if (flavorSuggestions.length > 0) {
         toggleFlavorTag(flavorSuggestions[0]);
       } else {
@@ -229,7 +301,7 @@ export default function IngredientSearch() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type an ingredient or flavor (e.g. bourbon, fruity, refreshing)..."
+            placeholder="Type ingredients, flavors, or a sentence (e.g. 'vodka and lemon juice')..."
             className="w-full bg-surface-elevated rounded-lg pl-10 pr-4 py-3 text-sm text-cream placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brass/50 transition-all"
           />
         </div>
@@ -313,11 +385,25 @@ export default function IngredientSearch() {
             Clear all
           </button>
           {myIngredients.length > 0 && (
-            <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center gap-2 mt-3 relative">
+              <AnimatePresence>
+                {showCombineHint && !combineAll && (
+                  <motion.button
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    onClick={() => { setCombineAll(true); setShowCombineHint(false); }}
+                    className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors mr-1 animate-pulse"
+                    title="Enable combine ALL"
+                  >
+                    <ArrowRight className="w-3 h-3" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
               <Switch
                 id="combine-all"
                 checked={combineAll}
-                onCheckedChange={setCombineAll}
+                onCheckedChange={(v) => { setCombineAll(v); setShowCombineHint(false); }}
                 className="data-[state=checked]:bg-brass"
               />
               <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
