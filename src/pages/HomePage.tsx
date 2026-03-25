@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Search, SlidersHorizontal, X, Shuffle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import cocktailsData, { allSpirits, allDifficulties, type Spirit, type Difficulty } from '@/data/cocktails';
+import cocktailsData, { allSpirits, allDifficulties, allFlavorTags, type Spirit, type Difficulty, type FlavorTag } from '@/data/cocktails';
 import CocktailCard from '@/components/CocktailCard';
 import AddToListModal from '@/components/AddToListModal';
 
@@ -16,6 +16,7 @@ export default function HomePage() {
   const [selectedSpirits, setSelectedSpirits] = useState<Spirit[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<'Classic' | 'Modern' | null>(null);
+  const [selectedFlavors, setSelectedFlavors] = useState<FlavorTag[]>([]);
   const [sortBy, setSortBy] = useState<'name' | 'difficulty' | 'spirit'>('name');
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
@@ -37,6 +38,7 @@ export default function HomePage() {
       if (selectedSpirits.length > 0 && !selectedSpirits.includes(c.spirit)) return false;
       if (selectedDifficulty && c.difficulty !== selectedDifficulty) return false;
       if (selectedCategory && c.category !== selectedCategory) return false;
+      if (selectedFlavors.length > 0 && !selectedFlavors.every(f => c.flavorTags?.includes(f))) return false;
       return true;
     });
 
@@ -64,13 +66,17 @@ export default function HomePage() {
     });
 
     return result;
-  }, [search, selectedSpirits, selectedDifficulty, selectedCategory, sortBy]);
+  }, [search, selectedSpirits, selectedDifficulty, selectedCategory, selectedFlavors, sortBy]);
 
   const toggleSpirit = (s: Spirit) => {
     setSelectedSpirits(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
   };
 
-  const hasFilters = selectedSpirits.length > 0 || selectedDifficulty || selectedCategory;
+  const toggleFlavor = (f: FlavorTag) => {
+    setSelectedFlavors(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
+  };
+
+  const hasFilters = selectedSpirits.length > 0 || selectedDifficulty || selectedCategory || selectedFlavors.length > 0;
   const isSearching = search.length > 0 || hasFilters;
   const displayCocktails = isSearching ? filtered : (showAll ? filtered : featured);
 
@@ -169,6 +175,25 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
+              {/* Flavor */}
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Flavor</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {allFlavorTags.map(f => (
+                    <button
+                      key={f}
+                      onClick={() => toggleFlavor(f)}
+                      className={`text-[11px] px-2.5 py-1 rounded-full transition-all ${
+                        selectedFlavors.includes(f)
+                          ? 'bg-brass/20 text-brass border border-brass/30'
+                          : 'glass text-muted-foreground hover:text-cream'
+                      }`}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
               {/* Sort */}
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Sort</p>
@@ -190,7 +215,7 @@ export default function HomePage() {
               </div>
               {hasFilters && (
                 <button
-                  onClick={() => { setSelectedSpirits([]); setSelectedDifficulty(null); setSelectedCategory(null); }}
+                  onClick={() => { setSelectedSpirits([]); setSelectedDifficulty(null); setSelectedCategory(null); setSelectedFlavors([]); }}
                   className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-cream transition-colors"
                 >
                   <X className="w-3 h-3" /> Clear filters
