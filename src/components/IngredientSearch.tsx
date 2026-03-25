@@ -127,23 +127,46 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
   // Synonym match
   const uiSynonyms = synonymLookup.get(ui);
   if (uiSynonyms) {
-    // Check if the cocktail ingredient matches any synonym
     if (uiSynonyms.has(ci)) return true;
-    // Check if any synonym is contained in the cocktail ingredient
     for (const syn of uiSynonyms) {
       if (ci.includes(syn) || syn.includes(ci)) return true;
     }
   }
 
-  // Also check if the cocktail ingredient has synonyms that match the user input
   const ciSynonyms = synonymLookup.get(ci);
   if (ciSynonyms && ciSynonyms.has(ui)) return true;
 
-  // Token-based fallback — require ALL user tokens to appear in the cocktail ingredient
+  // Token-based fallback
   const cocktailTokens = getIngredientTokens(cocktailIngredient);
   const userTokens = getIngredientTokens(userIngredient);
 
   if (userTokens.length > 0 && userTokens.every(token => cocktailTokens.includes(token))) return true;
+
+  return false;
+}
+
+// Check if userIngredient can substitute for cocktailIngredient (good+ quality)
+function ingredientMatchesWithSubs(cocktailIngredient: string, userIngredient: string): boolean {
+  if (ingredientMatches(cocktailIngredient, userIngredient)) return true;
+
+  const ci = normalizeIngredient(cocktailIngredient);
+  const ui = normalizeIngredient(userIngredient);
+
+  // Check if the cocktail ingredient has subs, and the user ingredient is one of them
+  const ciSubs = subLookup.get(ci);
+  if (ciSubs) {
+    for (const sub of ciSubs) {
+      if (ingredientMatches(sub, ui)) return true;
+    }
+  }
+
+  // Check if the user ingredient has subs, and the cocktail ingredient is one of them
+  const uiSubs = subLookup.get(ui);
+  if (uiSubs) {
+    for (const sub of uiSubs) {
+      if (ingredientMatches(cocktailIngredient, sub)) return true;
+    }
+  }
 
   return false;
 }
