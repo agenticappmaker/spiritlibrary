@@ -123,6 +123,7 @@ export default function IngredientSearch() {
   const [myFlavorTags, setMyFlavorTags] = useState<FlavorTag[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [combineAll, setCombineAll] = useState(false);
+  const [showCombineHint, setShowCombineHint] = useState(false);
 
   // Flavor tag suggestions based on input
   const flavorSuggestions = useMemo(() => {
@@ -195,9 +196,80 @@ export default function IngredientSearch() {
     setMyIngredients(prev => prev.filter(i => i !== name));
   };
 
+  // Parse a sentence to extract known ingredients and flavor tags
+  const parseSentence = useCallback((sentence: string) => {
+    const lower = sentence.toLowerCase();
+    const stopWords = new Set(['i', 'have', 'got', 'and', 'with', 'some', 'a', 'an', 'the', 'my', 'make', 'me', 'can', 'what', 'do', 'to', 'of', 'in', 'on', 'is', 'it', 'that', 'this', 'using', 'use']);
+
+    const foundIngredients: string[] = [];
+    const foundFlavors: FlavorTag[] = [];
+
+    // Check for multi-word ingredient matches first (longest match wins)
+    let remaining = lower;
+    const sortedNames = [...allIngredientNames].sort((a, b) => b.length - a.length);
+    for (const name of sortedNames) {
+      if (remaining.includes(name) && !myIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(name))) {
+        foundIngredients.push(name);
+        remaining = remaining.replace(name, ' ');
+      }
+    }
+
+    // Check for synonym group matches on remaining words
+    const remainingWords = remaining.split(/[\s,]+/).filter(w => w.length > 2 && !stopWords.has(w));
+    for (const word of remainingWords) {
+      const syns = synonymLookup.get(word);
+      if (syns) {
+        const matchedName = allIngredientNames.find(n => syns.has(n) || n === word);
+        if (matchedName && !foundIngredients.includes(matchedName) && !myIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(matchedName))) {
+          foundIngredients.push(matchedName);
+        }
+      }
+    }
+
+    // Check for flavor tags
+    for (const tag of allFlavorTags) {
+      if (lower.includes(tag.toLowerCase()) && !myFlavorTags.includes(tag)) {
+        foundFlavors.push(tag);
+      }
+    }
+
+    return { foundIngredients, foundFlavors };
+  }, [myIngredients, myFlavorTags]);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
+      const trimmed = input.trim();
+
+      // Check if this looks like a sentence (contains spaces and multiple words)
+      const words = trimmed.split(/[\s,]+/).filter(w => w.length > 0);
+      if (words.length >= 2) {
+        const { foundIngredients, foundFlavors } = parseSentence(trimmed);
+        if (foundIngredients.length > 0 || foundFlavors.length > 0) {
+          const newIngredients = [...myIngredients];
+          for (const ing of foundIngredients) {
+            if (!newIngredients.some(mi => normalizeIngredient(mi) === normalizeIngredient(ing))) {
+              newIngredients.push(ing);
+            }
+          }
+          setMyIngredients(newIngredients);
+
+          const newFlavors = [...myFlavorTags];
+          for (const f of foundFlavors) {
+            if (!newFlavors.includes(f)) newFlavors.push(f);
+          }
+          setMyFlavorTags(newFlavors);
+
+          setInput('');
+          // Show combine hint if multiple ingredients were added and combineAll is off
+          if (foundIngredients.length >= 2 && !combineAll) {
+            setShowCombineHint(true);
+          }
+          return;
+        }
+      }
+
+      // Single-word fallback
       if (flavorSuggestions.length > 0) {
         toggleFlavorTag(flavorSuggestions[0]);
       } else {
