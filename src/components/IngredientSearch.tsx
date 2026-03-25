@@ -3,8 +3,21 @@ import { X, ChefHat, Plus, ArrowRight } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData, { FlavorTag } from '@/data/cocktails';
+import substitutionsData from '@/data/substitutions';
 import CocktailCard from './CocktailCard';
 import AddToListModal from './AddToListModal';
+
+// Build a lookup: ingredient → substitutes with good+ quality
+const subLookup = new Map<string, Set<string>>();
+for (const sub of substitutionsData) {
+  const key = sub.ingredient.toLowerCase();
+  const goodSubs = new Set(
+    sub.substitutes
+      .filter(s => s.quality === 'excellent' || s.quality === 'good')
+      .map(s => s.name.toLowerCase())
+  );
+  subLookup.set(key, goodSubs);
+}
 
 const allFlavorTags: FlavorTag[] = [
   'Spirit-forward', 'Citrus', 'Sweet', 'Bitter', 'Herbal', 'Smoky',
