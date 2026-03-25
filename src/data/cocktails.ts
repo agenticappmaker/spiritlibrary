@@ -999,8 +999,9 @@ import diffordsCocktails5 from './cocktails-diffords-5';
 import diffordsCocktails6 from './cocktails-diffords-6';
 import newCocktails1 from './cocktails-new-1';
 import newCocktails2 from './cocktails-new-2';
+import newCocktails3 from './cocktails-new-3';
 
-cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails, ...diffordsCocktails, ...diffordsCocktails2, ...diffordsCocktails3, ...diffordsCocktails4, ...diffordsCocktails5, ...diffordsCocktails6, ...newCocktails1, ...newCocktails2);
+cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails, ...diffordsCocktails, ...diffordsCocktails2, ...diffordsCocktails3, ...diffordsCocktails4, ...diffordsCocktails5, ...diffordsCocktails6, ...newCocktails1, ...newCocktails2, ...newCocktails3);
 
 // Deduplicate: first by ID, then merge entries with the same normalized name (combine names with " / ")
 function normalizeName(name: string): string {
