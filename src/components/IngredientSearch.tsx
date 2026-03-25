@@ -270,38 +270,61 @@ export default function IngredientSearch() {
       </div>
 
       {/* Added ingredients */}
-      {myIngredients.length > 0 && (
+      {(myIngredients.length > 0 || myFlavorTags.length > 0) && (
         <div className="px-4 mb-5">
-          <p className="text-[10px] uppercase tracking-wider text-brass mb-2">Your ingredients ({myIngredients.length})</p>
-          <div className="flex flex-wrap gap-1.5">
-            {myIngredients.map(ing => (
-              <button
-                key={ing}
-                onClick={() => removeIngredient(ing)}
-                className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors capitalize"
-              >
-                {ing}
-                <X className="w-3 h-3" />
-              </button>
-            ))}
-            <button
-              onClick={() => setMyIngredients([])}
-              className="text-[11px] px-2.5 py-1 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
-            >
-              Clear all
-            </button>
-          </div>
-          <div className="flex items-center gap-2 mt-3">
-            <Switch
-              id="combine-all"
-              checked={combineAll}
-              onCheckedChange={setCombineAll}
-              className="data-[state=checked]:bg-brass"
-            />
-            <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
-              Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
-            </label>
-          </div>
+          {myIngredients.length > 0 && (
+            <>
+              <p className="text-[10px] uppercase tracking-wider text-brass mb-2">Your ingredients ({myIngredients.length})</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {myIngredients.map(ing => (
+                  <button
+                    key={ing}
+                    onClick={() => removeIngredient(ing)}
+                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors capitalize"
+                  >
+                    {ing}
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          {myFlavorTags.length > 0 && (
+            <>
+              <p className="text-[10px] uppercase tracking-wider text-purple-400 mb-2">Flavor profiles ({myFlavorTags.length})</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {myFlavorTags.map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => toggleFlavorTag(tag)}
+                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-colors"
+                  >
+                    {tag}
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <button
+            onClick={() => { setMyIngredients([]); setMyFlavorTags([]); }}
+            className="text-[11px] px-2.5 py-1 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
+          >
+            Clear all
+          </button>
+          {myIngredients.length > 0 && (
+            <div className="flex items-center gap-2 mt-3">
+              <Switch
+                id="combine-all"
+                checked={combineAll}
+                onCheckedChange={setCombineAll}
+                className="data-[state=checked]:bg-brass"
+              />
+              <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
+                Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
+              </label>
+            </div>
+          )}
         </div>
       )}
 
