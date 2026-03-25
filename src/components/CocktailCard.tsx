@@ -39,6 +39,7 @@ const difficultyColors: Record<string, string> = {
 
 export default function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { toggleSaved, savedCocktailIds, addToRecentlyViewed, addToShoppingList, isInShoppingList, removeFromShoppingList } = useAppStore();
   const isSaved = savedCocktailIds.includes(cocktail.id);
   const image = cocktailImages[cocktail.id];
@@ -46,6 +47,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
     if (!isFlipped) addToRecentlyViewed(cocktail.id);
+  };
+
+  const handleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(true);
+  };
+
+  const handleCollapse = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(false);
   };
 
   const handleSave = (e: React.MouseEvent) => {
