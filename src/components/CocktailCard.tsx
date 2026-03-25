@@ -211,6 +211,108 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
           </div>
         </div>
       </motion.div>
+
+      {/* Expanded overlay */}
+      {createPortal(
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+              onClick={handleCollapse}
+            >
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                className="relative w-[75vw] h-[75vh] max-w-2xl rounded-lg overflow-hidden brass-glow bg-card"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close button */}
+                <button
+                  onClick={handleCollapse}
+                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-muted/80 hover:bg-muted transition-colors"
+                >
+                  <X className="w-4 h-4 text-foreground" />
+                </button>
+
+                <div
+                  className="h-full overflow-y-auto overscroll-contain p-6"
+                  style={{ WebkitOverflowScrolling: 'touch' }}
+                >
+                  <div className="flex flex-col">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-2 pr-8">
+                      <h3 className="font-display text-xl leading-tight text-foreground">{cocktail.name}</h3>
+                      <div className="flex gap-1 shrink-0">
+                        <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                          <Heart className={`w-5 h-5 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
+                        </button>
+                        <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                          <Plus className="w-5 h-5 text-muted-foreground" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Glassware */}
+                    <p className="text-sm text-brass mb-4">{cocktail.glassware} · {cocktail.prepTime}</p>
+
+                    {/* Ingredients */}
+                    <div className="mb-4">
+                      <p className="text-xs uppercase tracking-widest text-brass font-semibold mb-2">Ingredients</p>
+                      {cocktail.ingredients.map((ing, i) => {
+                        const inList = isInShoppingList(ing.item);
+                        return (
+                          <div key={i} className="flex items-center text-sm py-1 border-b border-border/50 last:border-0 gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (inList) {
+                                  removeFromShoppingList(ing.item);
+                                } else {
+                                  addToShoppingList(ing.item, cocktail.id, cocktail.name);
+                                }
+                              }}
+                              className={`w-4 h-4 rounded-sm border flex items-center justify-center shrink-0 transition-colors ${
+                                inList
+                                  ? 'bg-brass/30 border-brass text-brass'
+                                  : 'border-muted-foreground/40 hover:border-brass/60'
+                              }`}
+                            >
+                              {inList && <ShoppingCart className="w-2.5 h-2.5" />}
+                            </button>
+                            <span className="text-foreground/90 flex-1">{ing.item}</span>
+                            <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Instructions */}
+                    <div className="mb-4">
+                      <p className="text-xs uppercase tracking-widest text-brass font-semibold mb-2">Method</p>
+                      {cocktail.instructions.map((step, i) => (
+                        <p key={i} className="text-sm leading-relaxed text-foreground/80 mb-2">
+                          <span className="text-brass font-semibold mr-2">{i + 1}.</span>{step}
+                        </p>
+                      ))}
+                    </div>
+
+                    {/* Garnish */}
+                    <p className="text-sm text-muted-foreground pt-2 border-t border-border/30">
+                      Garnish: <span className="text-foreground/80">{cocktail.garnish}</span>
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </motion.div>
   );
 }
