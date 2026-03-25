@@ -72,6 +72,10 @@ export default function HomePage() {
     setSelectedSpirits(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
   };
 
+  const toggleFlavor = (f: FlavorTag) => {
+    setSelectedFlavors(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
+  };
+
   const hasFilters = selectedSpirits.length > 0 || selectedDifficulty || selectedCategory;
   const isSearching = search.length > 0 || hasFilters;
   const displayCocktails = isSearching ? filtered : (showAll ? filtered : featured);
