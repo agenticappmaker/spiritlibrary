@@ -76,7 +76,7 @@ export default function HomePage() {
     setSelectedFlavors(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
   };
 
-  const hasFilters = selectedSpirits.length > 0 || selectedDifficulty || selectedCategory;
+  const hasFilters = selectedSpirits.length > 0 || selectedDifficulty || selectedCategory || selectedFlavors.length > 0;
   const isSearching = search.length > 0 || hasFilters;
   const displayCocktails = isSearching ? filtered : (showAll ? filtered : featured);
 
