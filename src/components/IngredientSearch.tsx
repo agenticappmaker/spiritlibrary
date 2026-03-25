@@ -229,20 +229,31 @@ export default function IngredientSearch() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type an ingredient (e.g. bourbon, lime, honey)..."
+            placeholder="Type an ingredient or flavor (e.g. bourbon, fruity, refreshing)..."
             className="w-full bg-surface-elevated rounded-lg pl-10 pr-4 py-3 text-sm text-cream placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brass/50 transition-all"
           />
         </div>
 
         {/* Suggestions dropdown */}
         <AnimatePresence>
-          {suggestions.length > 0 && (
+          {(suggestions.length > 0 || flavorSuggestions.length > 0) && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               className="mt-1 bg-surface-elevated rounded-lg border border-border/50 overflow-hidden"
             >
+              {flavorSuggestions.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => toggleFlavorTag(tag)}
+                  className="w-full text-left px-4 py-2.5 text-sm text-cream/80 hover:bg-muted/30 hover:text-cream transition-colors flex items-center gap-2"
+                >
+                  <Plus className="w-3 h-3 text-purple-400" />
+                  <span>{tag}</span>
+                  <span className="text-[10px] text-purple-400/70 ml-auto">flavor</span>
+                </button>
+              ))}
               {suggestions.map(s => (
                 <button
                   key={s}
