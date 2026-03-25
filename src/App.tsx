@@ -18,6 +18,27 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+function AppContent() {
+  useCloudSync();
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/ingredients" element={<IngredientSearch />} />
+        <Route path="/substitutions" element={<SubstitutionsPage />} />
+        <Route path="/shopping" element={<ShoppingListPage />} />
+        <Route path="/saved" element={<SavedPage />} />
+        <Route path="/lists" element={<ListsPage />} />
+        <Route path="/shared/:listId" element={<SharedListPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <BottomNav />
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -33,19 +54,7 @@ const App = () => (
       />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/ingredients" element={<IngredientSearch />} />
-            <Route path="/substitutions" element={<SubstitutionsPage />} />
-            <Route path="/shopping" element={<ShoppingListPage />} />
-            <Route path="/saved" element={<SavedPage />} />
-            <Route path="/lists" element={<ListsPage />} />
-            <Route path="/shared/:listId" element={<SharedListPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <BottomNav />
+          <AppContent />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
