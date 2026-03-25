@@ -996,9 +996,33 @@ import diffordsCocktails3 from './cocktails-diffords-3';
 import diffordsCocktails4 from './cocktails-diffords-4';
 import diffordsCocktails5 from './cocktails-diffords-5';
 
-cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails, ...diffordsCocktails, ...diffordsCocktails2, ...diffordsCocktails3, ...diffordsCocktails4, ...diffordsCocktails5);
+import diffordsCocktails6 from './cocktails-diffords-6';
+import newCocktails1 from './cocktails-new-1';
+import newCocktails2 from './cocktails-new-2';
 
-const uniqueCocktailsData = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
+cocktailsData.push(...extraCocktails, ...ginCocktails, ...vodkaCocktails, ...whiskeyCocktails, ...tequilaCocktails, ...rumCocktails, ...regardingCocktails, ...diffordsCocktails, ...diffordsCocktails2, ...diffordsCocktails3, ...diffordsCocktails4, ...diffordsCocktails5, ...diffordsCocktails6, ...newCocktails1, ...newCocktails2);
+
+// Deduplicate: first by ID, then merge entries with the same normalized name (combine names with " / ")
+function normalizeName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+const byId = Array.from(new Map(cocktailsData.map(c => [c.id, c])).values());
+const byName = new Map<string, Cocktail>();
+for (const cocktail of byId) {
+  const key = normalizeName(cocktail.name);
+  const existing = byName.get(key);
+  if (existing) {
+    // Merge names if they differ
+    const existingNames = existing.name.split(' / ');
+    if (!existingNames.some(n => normalizeName(n) === normalizeName(cocktail.name))) {
+      existing.name = `${existing.name} / ${cocktail.name}`;
+    }
+  } else {
+    byName.set(key, { ...cocktail });
+  }
+}
+const uniqueCocktailsData = Array.from(byName.values());
 
 export default uniqueCocktailsData;
 
