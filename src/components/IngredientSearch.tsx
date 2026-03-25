@@ -329,7 +329,7 @@ export default function IngredientSearch() {
       )}
 
       {/* Results */}
-      {myIngredients.length > 0 && (
+      {(myIngredients.length > 0 || myFlavorTags.length > 0) && (
         <>
           <div className="px-4 mb-3">
             <h2 className="font-display text-lg text-cream">
@@ -373,10 +373,10 @@ export default function IngredientSearch() {
         </>
       )}
 
-      {myIngredients.length === 0 && (
+      {myIngredients.length === 0 && myFlavorTags.length === 0 && (
         <div className="text-center py-16 px-4">
           <ChefHat className="w-10 h-10 text-brass/40 mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">Start adding ingredients to discover cocktails.</p>
+          <p className="text-muted-foreground text-sm">Start adding ingredients or flavor profiles to discover cocktails.</p>
           <p className="text-[11px] text-muted-foreground mt-1">
             We'll match from our library of {cocktailsData.length} recipes.
           </p>
