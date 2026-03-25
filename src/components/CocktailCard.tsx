@@ -139,6 +139,9 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               <div className="flex items-start justify-between mb-1.5">
                 <h3 className="font-display text-base leading-tight text-foreground pr-2">{cocktail.name}</h3>
                 <div className="flex gap-1 shrink-0">
+                  <button onClick={handleExpand} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                    <Search className="w-4 h-4 text-muted-foreground" />
+                  </button>
                   <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-muted transition-colors">
                     <Heart className={`w-4 h-4 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
                   </button>
