@@ -175,6 +175,25 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
+              {/* Flavor */}
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Flavor</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {allFlavorTags.map(f => (
+                    <button
+                      key={f}
+                      onClick={() => toggleFlavor(f)}
+                      className={`text-[11px] px-2.5 py-1 rounded-full transition-all ${
+                        selectedFlavors.includes(f)
+                          ? 'bg-brass/20 text-brass border border-brass/30'
+                          : 'glass text-muted-foreground hover:text-cream'
+                      }`}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
               {/* Sort */}
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Sort</p>
@@ -196,7 +215,7 @@ export default function HomePage() {
               </div>
               {hasFilters && (
                 <button
-                  onClick={() => { setSelectedSpirits([]); setSelectedDifficulty(null); setSelectedCategory(null); }}
+                  onClick={() => { setSelectedSpirits([]); setSelectedDifficulty(null); setSelectedCategory(null); setSelectedFlavors([]); }}
                   className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-cream transition-colors"
                 >
                   <X className="w-3 h-3" /> Clear filters
