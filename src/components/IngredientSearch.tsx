@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { X, ChefHat, Plus } from 'lucide-react';
+import { useState, useMemo, useCallback } from 'react';
+import { X, ChefHat, Plus, ArrowRight } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
 import cocktailsData, { FlavorTag } from '@/data/cocktails';
