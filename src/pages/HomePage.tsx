@@ -16,6 +16,7 @@ export default function HomePage() {
   const [selectedSpirits, setSelectedSpirits] = useState<Spirit[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<'Classic' | 'Modern' | null>(null);
+  const [selectedFlavors, setSelectedFlavors] = useState<FlavorTag[]>([]);
   const [sortBy, setSortBy] = useState<'name' | 'difficulty' | 'spirit'>('name');
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
