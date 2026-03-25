@@ -175,7 +175,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               </div>
 
               {/* Glassware */}
-              <p className="text-[11px] text-brass mb-2.5">{cocktail.glassware} · {cocktail.prepTime}</p>
+              <p className="text-[11px] text-brass mb-1">{cocktail.glassware} · {cocktail.prepTime}</p>
+              {cocktail.flavorTags?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-2.5">
+                  {cocktail.flavorTags.map(tag => (
+                    <span key={tag} className={`text-[9px] px-1.5 py-0.5 rounded-full text-cream/80 ${flavorColors[tag] || 'bg-white/10'}`}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Ingredients */}
               <div className="mb-2.5">
@@ -281,7 +290,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
                     </div>
 
                     {/* Glassware */}
-                    <p className="text-sm text-brass mb-4">{cocktail.glassware} · {cocktail.prepTime}</p>
+                    <p className="text-sm text-brass mb-2">{cocktail.glassware} · {cocktail.prepTime}</p>
+                    {cocktail.flavorTags?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {cocktail.flavorTags.map(tag => (
+                          <span key={tag} className={`text-[11px] px-2 py-0.5 rounded-full text-cream/80 ${flavorColors[tag] || 'bg-white/10'}`}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Ingredients */}
                     <div className="mb-4">
