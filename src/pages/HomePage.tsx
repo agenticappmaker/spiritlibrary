@@ -102,6 +102,7 @@ export default function HomePage() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded transition-colors ${showFilters || hasFilters ? 'text-brass' : 'text-muted-foreground hover:text-cream'}`}
+            title="Filter"
           >
             <SlidersHorizontal className="w-4 h-4" />
           </button>
