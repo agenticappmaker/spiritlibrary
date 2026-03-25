@@ -37,6 +37,24 @@ const difficultyColors: Record<string, string> = {
   Advanced: 'bg-red-900/60',
 };
 
+const flavorColors: Record<string, string> = {
+  'Spirit-forward': 'bg-amber-700/50',
+  'Citrus': 'bg-yellow-600/50',
+  'Sweet': 'bg-pink-700/50',
+  'Bitter': 'bg-orange-900/50',
+  'Herbal': 'bg-emerald-700/50',
+  'Smoky': 'bg-stone-600/50',
+  'Tropical': 'bg-cyan-700/50',
+  'Creamy': 'bg-amber-200/30',
+  'Spicy': 'bg-red-700/50',
+  'Floral': 'bg-purple-700/50',
+  'Fruity': 'bg-rose-700/50',
+  'Refreshing': 'bg-teal-700/50',
+  'Rich': 'bg-amber-900/50',
+  'Dry': 'bg-slate-600/50',
+  'Effervescent': 'bg-sky-700/50',
+};
+
 export default function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -108,13 +126,18 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-20" />
           <div className="absolute inset-0 flex flex-col justify-end p-3 z-30">
             <h3 className="font-display text-base sm:text-lg leading-tight text-cream">{cocktail.name}</h3>
-            <div className="flex gap-1.5 mt-2 flex-wrap">
+            <div className="flex gap-1 mt-2 flex-wrap">
               <span className={`text-[10px] px-2 py-0.5 rounded-full backdrop-blur-md text-cream/90 ${spiritColors[cocktail.spirit] || 'bg-white/10'}`}>
                 {cocktail.spirit}
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded-full backdrop-blur-md text-cream/90 ${difficultyColors[cocktail.difficulty]}`}>
                 {cocktail.difficulty}
               </span>
+              {cocktail.flavorTags?.slice(0, 2).map(tag => (
+                <span key={tag} className={`text-[10px] px-2 py-0.5 rounded-full backdrop-blur-md text-cream/90 ${flavorColors[tag] || 'bg-white/10'}`}>
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -152,7 +175,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               </div>
 
               {/* Glassware */}
-              <p className="text-[11px] text-brass mb-2.5">{cocktail.glassware} · {cocktail.prepTime}</p>
+              <p className="text-[11px] text-brass mb-1">{cocktail.glassware} · {cocktail.prepTime}</p>
+              {cocktail.flavorTags?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-2.5">
+                  {cocktail.flavorTags.map(tag => (
+                    <span key={tag} className={`text-[9px] px-1.5 py-0.5 rounded-full text-cream/80 ${flavorColors[tag] || 'bg-white/10'}`}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Ingredients */}
               <div className="mb-2.5">
@@ -258,7 +290,16 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
                     </div>
 
                     {/* Glassware */}
-                    <p className="text-sm text-brass mb-4">{cocktail.glassware} · {cocktail.prepTime}</p>
+                    <p className="text-sm text-brass mb-2">{cocktail.glassware} · {cocktail.prepTime}</p>
+                    {cocktail.flavorTags?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {cocktail.flavorTags.map(tag => (
+                          <span key={tag} className={`text-[11px] px-2 py-0.5 rounded-full text-cream/80 ${flavorColors[tag] || 'bg-white/10'}`}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Ingredients */}
                     <div className="mb-4">

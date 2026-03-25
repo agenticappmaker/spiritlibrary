@@ -2,9 +2,15 @@ import { useState, useMemo } from 'react';
 import { X, ChefHat, Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
-import cocktailsData from '@/data/cocktails';
+import cocktailsData, { FlavorTag } from '@/data/cocktails';
 import CocktailCard from './CocktailCard';
 import AddToListModal from './AddToListModal';
+
+const allFlavorTags: FlavorTag[] = [
+  'Spirit-forward', 'Citrus', 'Sweet', 'Bitter', 'Herbal', 'Smoky',
+  'Tropical', 'Creamy', 'Spicy', 'Floral', 'Fruity', 'Refreshing',
+  'Rich', 'Dry', 'Effervescent'
+];
 
 // Extract all unique ingredient names from cocktails
 const allIngredientNames = Array.from(
@@ -114,10 +120,20 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
 export default function IngredientSearch() {
   const [input, setInput] = useState('');
   const [myIngredients, setMyIngredients] = useState<string[]>([]);
+  const [myFlavorTags, setMyFlavorTags] = useState<FlavorTag[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [combineAll, setCombineAll] = useState(false);
 
-  // Suggestions based on current input
+  // Flavor tag suggestions based on input
+  const flavorSuggestions = useMemo(() => {
+    if (input.length < 2) return [];
+    const lower = input.toLowerCase();
+    return allFlavorTags.filter(tag =>
+      tag.toLowerCase().includes(lower) && !myFlavorTags.includes(tag)
+    );
+  }, [input, myFlavorTags]);
+
+  // Ingredient suggestions based on current input
   const suggestions = useMemo(() => {
     if (input.length < 2) return [];
     const lower = input.toLowerCase();
@@ -126,9 +142,9 @@ export default function IngredientSearch() {
       .slice(0, 8);
   }, [input, myIngredients]);
 
-  // Find cocktails matching user's ingredients
+  // Find cocktails matching user's ingredients and flavor tags
   const matchedCocktails = useMemo(() => {
-    if (myIngredients.length === 0) return [];
+    if (myIngredients.length === 0 && myFlavorTags.length === 0) return [];
 
     const uniqueCocktails = Array.from(new Map(cocktailsData.map(cocktail => [cocktail.id, cocktail])).values());
 
@@ -141,16 +157,31 @@ export default function IngredientSearch() {
         const total = cocktail.ingredients.length;
         const pct = total > 0 ? matched / total : 0;
 
-        // "Combine all" = every user ingredient must appear in the recipe
-        const recipeUsesAllUserIngredients = myIngredients.every(ui =>
+        const recipeUsesAllUserIngredients = myIngredients.length === 0 || myIngredients.every(ui =>
           cocktail.ingredients.some(ci => ingredientMatches(ci.item, ui))
         );
 
-        return { cocktail, matched, total, pct, recipeUsesAllUserIngredients };
+        // Flavor tag matching
+        const flavorMatchCount = myFlavorTags.filter(tag =>
+          cocktail.flavorTags?.includes(tag)
+        ).length;
+        const allFlavorsMatch = myFlavorTags.length === 0 || myFlavorTags.every(tag =>
+          cocktail.flavorTags?.includes(tag)
+        );
+
+        return { cocktail, matched, total, pct, recipeUsesAllUserIngredients, flavorMatchCount, allFlavorsMatch };
       })
-      .filter(result => combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0)
-      .sort((a, b) => b.pct - a.pct || b.matched - a.matched)
-  }, [myIngredients, combineAll]);
+      .filter(result => {
+        const ingredientPass = myIngredients.length === 0
+          ? true
+          : combineAll ? result.recipeUsesAllUserIngredients : result.matched > 0;
+        const flavorPass = myFlavorTags.length === 0
+          ? true
+          : result.flavorMatchCount > 0;
+        return ingredientPass && flavorPass;
+      })
+      .sort((a, b) => b.pct - a.pct || b.flavorMatchCount - a.flavorMatchCount || b.matched - a.matched)
+  }, [myIngredients, myFlavorTags, combineAll]);
 
   const addIngredient = (name: string) => {
     const trimmed = name.trim();
@@ -167,8 +198,19 @@ export default function IngredientSearch() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
-      addIngredient(suggestions.length > 0 ? suggestions[0] : input);
+      if (flavorSuggestions.length > 0) {
+        toggleFlavorTag(flavorSuggestions[0]);
+      } else {
+        addIngredient(suggestions.length > 0 ? suggestions[0] : input);
+      }
     }
+  };
+
+  const toggleFlavorTag = (tag: FlavorTag) => {
+    setMyFlavorTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+    setInput('');
   };
 
   return (
@@ -187,20 +229,31 @@ export default function IngredientSearch() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type an ingredient (e.g. bourbon, lime, honey)..."
+            placeholder="Type an ingredient or flavor (e.g. bourbon, fruity, refreshing)..."
             className="w-full bg-surface-elevated rounded-lg pl-10 pr-4 py-3 text-sm text-cream placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brass/50 transition-all"
           />
         </div>
 
         {/* Suggestions dropdown */}
         <AnimatePresence>
-          {suggestions.length > 0 && (
+          {(suggestions.length > 0 || flavorSuggestions.length > 0) && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               className="mt-1 bg-surface-elevated rounded-lg border border-border/50 overflow-hidden"
             >
+              {flavorSuggestions.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => toggleFlavorTag(tag)}
+                  className="w-full text-left px-4 py-2.5 text-sm text-cream/80 hover:bg-muted/30 hover:text-cream transition-colors flex items-center gap-2"
+                >
+                  <Plus className="w-3 h-3 text-purple-400" />
+                  <span>{tag}</span>
+                  <span className="text-[10px] text-purple-400/70 ml-auto">flavor</span>
+                </button>
+              ))}
               {suggestions.map(s => (
                 <button
                   key={s}
@@ -217,43 +270,66 @@ export default function IngredientSearch() {
       </div>
 
       {/* Added ingredients */}
-      {myIngredients.length > 0 && (
+      {(myIngredients.length > 0 || myFlavorTags.length > 0) && (
         <div className="px-4 mb-5">
-          <p className="text-[10px] uppercase tracking-wider text-brass mb-2">Your ingredients ({myIngredients.length})</p>
-          <div className="flex flex-wrap gap-1.5">
-            {myIngredients.map(ing => (
-              <button
-                key={ing}
-                onClick={() => removeIngredient(ing)}
-                className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors capitalize"
-              >
-                {ing}
-                <X className="w-3 h-3" />
-              </button>
-            ))}
-            <button
-              onClick={() => setMyIngredients([])}
-              className="text-[11px] px-2.5 py-1 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
-            >
-              Clear all
-            </button>
-          </div>
-          <div className="flex items-center gap-2 mt-3">
-            <Switch
-              id="combine-all"
-              checked={combineAll}
-              onCheckedChange={setCombineAll}
-              className="data-[state=checked]:bg-brass"
-            />
-            <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
-              Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
-            </label>
-          </div>
+          {myIngredients.length > 0 && (
+            <>
+              <p className="text-[10px] uppercase tracking-wider text-brass mb-2">Your ingredients ({myIngredients.length})</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {myIngredients.map(ing => (
+                  <button
+                    key={ing}
+                    onClick={() => removeIngredient(ing)}
+                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-brass/20 text-brass border border-brass/30 hover:bg-brass/30 transition-colors capitalize"
+                  >
+                    {ing}
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          {myFlavorTags.length > 0 && (
+            <>
+              <p className="text-[10px] uppercase tracking-wider text-purple-400 mb-2">Flavor profiles ({myFlavorTags.length})</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {myFlavorTags.map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => toggleFlavorTag(tag)}
+                    className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-colors"
+                  >
+                    {tag}
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <button
+            onClick={() => { setMyIngredients([]); setMyFlavorTags([]); }}
+            className="text-[11px] px-2.5 py-1 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
+          >
+            Clear all
+          </button>
+          {myIngredients.length > 0 && (
+            <div className="flex items-center gap-2 mt-3">
+              <Switch
+                id="combine-all"
+                checked={combineAll}
+                onCheckedChange={setCombineAll}
+                className="data-[state=checked]:bg-brass"
+              />
+              <label htmlFor="combine-all" className="text-[11px] text-muted-foreground cursor-pointer select-none">
+                Show me cocktails I can make combining <span className="text-brass font-medium">ALL</span> these ingredients
+              </label>
+            </div>
+          )}
         </div>
       )}
 
       {/* Results */}
-      {myIngredients.length > 0 && (
+      {(myIngredients.length > 0 || myFlavorTags.length > 0) && (
         <>
           <div className="px-4 mb-3">
             <h2 className="font-display text-lg text-cream">
@@ -297,10 +373,10 @@ export default function IngredientSearch() {
         </>
       )}
 
-      {myIngredients.length === 0 && (
+      {myIngredients.length === 0 && myFlavorTags.length === 0 && (
         <div className="text-center py-16 px-4">
           <ChefHat className="w-10 h-10 text-brass/40 mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">Start adding ingredients to discover cocktails.</p>
+          <p className="text-muted-foreground text-sm">Start adding ingredients or flavor profiles to discover cocktails.</p>
           <p className="text-[11px] text-muted-foreground mt-1">
             We'll match from our library of {cocktailsData.length} recipes.
           </p>
