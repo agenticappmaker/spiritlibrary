@@ -213,7 +213,7 @@ export default function IngredientSearch() {
         const pct = total > 0 ? matched / total : 0;
 
         const recipeUsesAllUserIngredients = myIngredients.length === 0 || myIngredients.every(ui =>
-          cocktail.ingredients.some(ci => ingredientMatches(ci.item, ui))
+          cocktail.ingredients.some(ci => ingredientMatchesWithSubs(ci.item, ui))
         );
 
         // Flavor tag matching
