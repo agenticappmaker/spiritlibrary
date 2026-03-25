@@ -2,9 +2,15 @@ import { useState, useMemo } from 'react';
 import { X, ChefHat, Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { motion, AnimatePresence } from 'framer-motion';
-import cocktailsData from '@/data/cocktails';
+import cocktailsData, { FlavorTag } from '@/data/cocktails';
 import CocktailCard from './CocktailCard';
 import AddToListModal from './AddToListModal';
+
+const allFlavorTags: FlavorTag[] = [
+  'Spirit-forward', 'Citrus', 'Sweet', 'Bitter', 'Herbal', 'Smoky',
+  'Tropical', 'Creamy', 'Spicy', 'Floral', 'Fruity', 'Refreshing',
+  'Rich', 'Dry', 'Effervescent'
+];
 
 // Extract all unique ingredient names from cocktails
 const allIngredientNames = Array.from(
@@ -114,6 +120,7 @@ function ingredientMatches(cocktailIngredient: string, userIngredient: string): 
 export default function IngredientSearch() {
   const [input, setInput] = useState('');
   const [myIngredients, setMyIngredients] = useState<string[]>([]);
+  const [myFlavorTags, setMyFlavorTags] = useState<FlavorTag[]>([]);
   const [addToListCocktailId, setAddToListCocktailId] = useState<string | null>(null);
   const [combineAll, setCombineAll] = useState(false);
 
