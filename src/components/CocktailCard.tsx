@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Plus, RotateCcw, ShoppingCart, Search, X } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
 import { toast } from 'sonner';
@@ -161,17 +162,34 @@ export default function CocktailCard({ cocktail, index = 0, onAddToList }: Cockt
               {/* Header */}
               <div className="flex items-start justify-between mb-1.5">
                 <h3 className="font-display text-base leading-tight text-foreground pr-2">{cocktail.name}</h3>
-                <div className="flex gap-1 shrink-0">
-                  <button onClick={handleExpand} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                    <Search className="w-4 h-4 text-muted-foreground" />
-                  </button>
-                  <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                    <Heart className={`w-4 h-4 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
-                  </button>
-                  <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                    <Plus className="w-4 h-4 text-muted-foreground" />
-                  </button>
-                </div>
+                <TooltipProvider delayDuration={300}>
+                  <div className="flex gap-1 shrink-0">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button onClick={handleExpand} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                          <Search className="w-4 h-4 text-muted-foreground" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom"><p>Magnify</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button onClick={handleSave} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                          <Heart className={`w-4 h-4 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom"><p>Save</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                          <Plus className="w-4 h-4 text-muted-foreground" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom"><p>Add all to cart</p></TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </div>
 
               {/* Glassware */}
