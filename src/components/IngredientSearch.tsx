@@ -301,7 +301,7 @@ export default function IngredientSearch() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type an ingredient or flavor (e.g. bourbon, fruity, refreshing)..."
+            placeholder="Type ingredients, flavors, or a sentence (e.g. 'vodka and lemon juice')..."
             className="w-full bg-surface-elevated rounded-lg pl-10 pr-4 py-3 text-sm text-cream placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brass/50 transition-all"
           />
         </div>
