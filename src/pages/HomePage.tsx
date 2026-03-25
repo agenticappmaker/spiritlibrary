@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Search, SlidersHorizontal, X, Shuffle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import cocktailsData, { allSpirits, allDifficulties, type Spirit, type Difficulty, type FlavorTag } from '@/data/cocktails';
+import cocktailsData, { allSpirits, allDifficulties, allFlavorTags, type Spirit, type Difficulty, type FlavorTag } from '@/data/cocktails';
 import CocktailCard from '@/components/CocktailCard';
 import AddToListModal from '@/components/AddToListModal';
 
