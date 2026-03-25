@@ -66,7 +66,7 @@ export default function HomePage() {
     });
 
     return result;
-  }, [search, selectedSpirits, selectedDifficulty, selectedCategory, sortBy]);
+  }, [search, selectedSpirits, selectedDifficulty, selectedCategory, selectedFlavors, sortBy]);
 
   const toggleSpirit = (s: Spirit) => {
     setSelectedSpirits(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
