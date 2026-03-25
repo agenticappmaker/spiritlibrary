@@ -198,8 +198,19 @@ export default function IngredientSearch() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
-      addIngredient(suggestions.length > 0 ? suggestions[0] : input);
+      if (flavorSuggestions.length > 0) {
+        toggleFlavorTag(flavorSuggestions[0]);
+      } else {
+        addIngredient(suggestions.length > 0 ? suggestions[0] : input);
+      }
     }
+  };
+
+  const toggleFlavorTag = (tag: FlavorTag) => {
+    setMyFlavorTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+    setInput('');
   };
 
   return (
