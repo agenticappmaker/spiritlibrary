@@ -203,7 +203,7 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button onClick={handleAddAllToCart} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                          <Plus className="w-4 h-4 text-muted-foreground" />
+                          <ShoppingCart className="w-4 h-4 text-muted-foreground" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom"><p>Add recipe to cart</p></TooltipContent>
@@ -360,7 +360,7 @@ function ExpandedOverlay({
                   <Heart className={`w-5 h-5 transition-all ${isSaved ? 'fill-burgundy text-burgundy scale-110' : 'text-muted-foreground'}`} />
                 </button>
                 <button onClick={onAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                  <Plus className="w-5 h-5 text-muted-foreground" />
+                  <ShoppingCart className="w-5 h-5 text-muted-foreground" />
                 </button>
               </div>
             </div>
