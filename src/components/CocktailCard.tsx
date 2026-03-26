@@ -100,8 +100,8 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
   const handleShare = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     const ingredientList = cocktail.ingredients.map(i => `• ${i.amount} ${i.item}`).join('\n');
-    const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}`;
-    const shareData = { title: cocktail.name, text };
+    const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}\n\nhttps://spiritlibrary.lovable.app`;
+    const shareData = { title: cocktail.name, text, url: 'https://spiritlibrary.lovable.app' };
     if (navigator.share) {
       try { await navigator.share(shareData); } catch {}
     } else {
@@ -429,7 +429,7 @@ function ExpandedOverlay({
               onClick={async (e) => {
                 e.stopPropagation();
                 const ingredientList = cocktail.ingredients.map(i => `• ${i.amount} ${i.item}`).join('\n');
-                const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}`;
+                const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}\n\nhttps://spiritlibrary.lovable.app`;
                 if (navigator.share) {
                   try { await navigator.share({ title: cocktail.name, text }); } catch {}
                 } else {
