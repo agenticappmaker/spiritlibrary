@@ -203,11 +203,11 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                        <button onClick={handleAddAllToCart} className="p-1.5 rounded-full hover:bg-muted transition-colors">
                           <Plus className="w-4 h-4 text-muted-foreground" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Add all to cart</p></TooltipContent>
+                      <TooltipContent side="bottom"><p>Add recipe to cart</p></TooltipContent>
                     </Tooltip>
                   </div>
                 </TooltipProvider>
