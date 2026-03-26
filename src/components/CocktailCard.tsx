@@ -264,13 +264,21 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                 Garnish: <span className="text-foreground/80">{cocktail.garnish}</span>
               </p>
 
-              {/* Flip back button */}
-              <button
-                onClick={(e) => { e.stopPropagation(); handleFlip(); }}
-                className="flex items-center justify-center gap-1.5 text-xs text-brass mt-3 mb-1 py-2 rounded-md hover:bg-muted transition-colors font-medium"
-              >
-                <RotateCcw className="w-3.5 h-3.5" /> Flip back
-              </button>
+              {/* Share + Flip back */}
+              <div className="flex items-center justify-center gap-3 mt-3 mb-1">
+                <button
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground py-2 px-3 rounded-md hover:bg-muted transition-colors font-medium"
+                >
+                  <Share2 className="w-3.5 h-3.5" /> Share
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleFlip(); }}
+                  className="flex items-center justify-center gap-1.5 text-xs text-brass py-2 px-3 rounded-md hover:bg-muted transition-colors font-medium"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Flip back
+                </button>
+              </div>
             </div>
           </div>
         </div>
