@@ -75,18 +75,21 @@ export default function ShoppingListPage() {
                   <p className="text-[10px] text-muted-foreground">for {item.cocktailName}</p>
                 )}
               </div>
-              <button
-                onClick={() => removeFromShoppingList(item.ingredient)}
-                className="p-1 rounded hover:bg-muted/50 transition-colors"
-              >
-                <X className="w-3.5 h-3.5 text-muted-foreground" />
-              </button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* Checked items */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => window.open(`https://www.instacart.com/store/search/${encodeURIComponent(item.ingredient)}`, '_blank')}
+                  className="p-1 rounded hover:bg-[#43B02A]/20 transition-colors"
+                  title="Buy on Instacart"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-[#43B02A]" />
+                </button>
+                <button
+                  onClick={() => removeFromShoppingList(item.ingredient)}
+                  className="p-1 rounded hover:bg-muted/50 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </div>
       {checked.length > 0 && (
         <div className="px-4 mt-6">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Checked off ({checked.length})</p>
