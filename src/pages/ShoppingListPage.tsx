@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShoppingCart, Trash2, Check, X } from 'lucide-react';
+import { ShoppingCart, Trash2, Check, X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/stores/useAppStore';
 
