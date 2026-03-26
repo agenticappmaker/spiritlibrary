@@ -240,13 +240,18 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                             addToShoppingList(ing.item, cocktail.id, cocktail.name);
                           }
                         }}
-                        className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center shrink-0 transition-colors ${
+                      className={`shrink-0 transition-colors flex items-center justify-center ${
                           inList
-                            ? 'bg-brass/30 border-brass text-brass'
-                            : 'border-muted-foreground/40 hover:border-brass/60'
+                            ? 'w-3.5 h-3.5 rounded-sm bg-brass/30 border border-brass text-brass relative'
+                            : 'text-[8px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-brass'
                         }`}
                       >
-                        {inList && <ShoppingCart className="w-2 h-2" />}
+                        {inList ? (
+                          <span className="relative">
+                            <ShoppingCart className="w-2.5 h-2.5" />
+                            <svg className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 text-brass" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          </span>
+                        ) : 'add'}
                       </button>
                       <span className="text-foreground/90 flex-1">{ing.item}</span>
                       <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
@@ -393,13 +398,18 @@ function ExpandedOverlay({
                           addToShoppingList(ing.item, cocktail.id, cocktail.name);
                         }
                       }}
-                      className={`w-4 h-4 rounded-sm border flex items-center justify-center shrink-0 transition-colors ${
+                      className={`shrink-0 transition-colors flex items-center justify-center ${
                         inList
-                          ? 'bg-brass/30 border-brass text-brass'
-                          : 'border-muted-foreground/40 hover:border-brass/60'
+                          ? 'w-4 h-4 rounded-sm bg-brass/30 border border-brass text-brass relative'
+                          : 'text-[9px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-brass'
                       }`}
                     >
-                      {inList && <ShoppingCart className="w-2.5 h-2.5" />}
+                      {inList ? (
+                        <span className="relative">
+                          <ShoppingCart className="w-3 h-3" />
+                          <svg className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 text-brass" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                      ) : 'add'}
                     </button>
                     <span className="text-foreground/90 flex-1">{ing.item}</span>
                     <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
