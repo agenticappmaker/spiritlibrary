@@ -85,10 +85,17 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
     toast(isSaved ? 'Removed from saved.' : 'Added to saved. A fine choice.', { duration: 2000 });
   }, [cocktail.id, isSaved, toggleSaved]);
 
-  const handleAddToList = useCallback((e: React.MouseEvent) => {
+  const handleAddAllToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    onAddToList?.(cocktail.id);
-  }, [cocktail.id, onAddToList]);
+    let added = 0;
+    cocktail.ingredients.forEach(ing => {
+      if (!isInShoppingList(ing.item)) {
+        addToShoppingList(ing.item, cocktail.id, cocktail.name);
+        added++;
+      }
+    });
+    toast(added > 0 ? `Added ${added} ingredient${added !== 1 ? 's' : ''} to cart.` : 'All ingredients already in cart.', { duration: 2000 });
+  }, [cocktail, isInShoppingList, addToShoppingList]);
 
   const handleShare = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
