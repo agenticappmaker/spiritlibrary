@@ -85,10 +85,17 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
     toast(isSaved ? 'Removed from saved.' : 'Added to saved. A fine choice.', { duration: 2000 });
   }, [cocktail.id, isSaved, toggleSaved]);
 
-  const handleAddToList = useCallback((e: React.MouseEvent) => {
+  const handleAddAllToCart = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    onAddToList?.(cocktail.id);
-  }, [cocktail.id, onAddToList]);
+    let added = 0;
+    cocktail.ingredients.forEach(ing => {
+      if (!isInShoppingList(ing.item)) {
+        addToShoppingList(ing.item, cocktail.id, cocktail.name);
+        added++;
+      }
+    });
+    toast(added > 0 ? `Added ${added} ingredient${added !== 1 ? 's' : ''} to cart.` : 'All ingredients already in cart.', { duration: 2000 });
+  }, [cocktail, isInShoppingList, addToShoppingList]);
 
   const handleShare = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -196,11 +203,11 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button onClick={handleAddToList} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                        <button onClick={handleAddAllToCart} className="p-1.5 rounded-full hover:bg-muted transition-colors">
                           <Plus className="w-4 h-4 text-muted-foreground" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom"><p>Add all to cart</p></TooltipContent>
+                      <TooltipContent side="bottom"><p>Add recipe to cart</p></TooltipContent>
                     </Tooltip>
                   </div>
                 </TooltipProvider>
@@ -291,7 +298,7 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
           isSaved={isSaved}
           onCollapse={handleCollapse}
           onSave={handleSave}
-          onAddToList={handleAddToList}
+          onAddToList={handleAddAllToCart}
           isInShoppingList={isInShoppingList}
           addToShoppingList={addToShoppingList}
           removeFromShoppingList={removeFromShoppingList}
