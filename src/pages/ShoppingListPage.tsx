@@ -89,7 +89,12 @@ export default function ShoppingListPage() {
                 >
                   <X className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>
-              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Checked items */}
       {checked.length > 0 && (
         <div className="px-4 mt-6">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">Checked off ({checked.length})</p>
