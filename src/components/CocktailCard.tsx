@@ -416,6 +416,24 @@ function ExpandedOverlay({
             <p className="text-sm text-muted-foreground pt-2 border-t border-border/30">
               Garnish: <span className="text-foreground/80">{cocktail.garnish}</span>
             </p>
+
+            {/* Share */}
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                const ingredientList = cocktail.ingredients.map(i => `• ${i.amount} ${i.item}`).join('\n');
+                const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}`;
+                if (navigator.share) {
+                  try { await navigator.share({ title: cocktail.name, text }); } catch {}
+                } else {
+                  await navigator.clipboard.writeText(text);
+                  toast('Recipe copied to clipboard!', { duration: 2000 });
+                }
+              }}
+              className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-4 py-2.5 rounded-md hover:bg-muted transition-colors font-medium"
+            >
+              <Share2 className="w-4 h-4" /> Share Recipe
+            </button>
           </div>
         </div>
       </div>
