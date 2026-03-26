@@ -73,7 +73,10 @@ const synonymGroups: string[][] = [
   ['elderflower liqueur', 'st-germain', 'st germain'],
   ['green chartreuse', 'chartreuse'],
   ['coconut cream', 'cream of coconut', 'coco lopez'],
-  ['ginger beer', 'ginger ale'],
+  ['ginger beer'],
+  ['ginger ale'],
+  ['ginger syrup', 'ginger cordial'],
+  ['ginger', 'fresh ginger'],
   ['peach schnapps', 'peach liqueur'],
   ['cherry', 'cherries', 'maraschino cherry', 'luxardo cherry'],
   ['strawberry', 'strawberries', 'fresh strawberries'],
@@ -117,30 +120,43 @@ function getIngredientTokens(name: string): string[] {
     .filter(token => token.length > 2 && !stopWords.has(token));
 }
 
+// Words that should only match as whole-word boundaries, not as substrings
+const exactMatchOnly = new Set(['gin', 'rum', 'rye', 'port', 'beer', 'ale']);
+
+function isWordBoundaryMatch(haystack: string, needle: string): boolean {
+  // If the needle is short and ambiguous, require word-boundary matching
+  if (exactMatchOnly.has(needle) || needle.length <= 3) {
+    const regex = new RegExp(`(?:^|\\s|[^a-z])${needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:$|\\s|[^a-z])`, 'i');
+    return regex.test(` ${haystack} `);
+  }
+  return haystack.includes(needle);
+}
+
 function ingredientMatches(cocktailIngredient: string, userIngredient: string): boolean {
   const ci = normalizeIngredient(cocktailIngredient);
   const ui = normalizeIngredient(userIngredient);
 
   // Direct match
-  if (ci === ui || ci.includes(ui) || ui.includes(ci)) return true;
+  if (ci === ui) return true;
+  if (isWordBoundaryMatch(ci, ui) || isWordBoundaryMatch(ui, ci)) return true;
 
   // Synonym match
   const uiSynonyms = synonymLookup.get(ui);
   if (uiSynonyms) {
     if (uiSynonyms.has(ci)) return true;
     for (const syn of uiSynonyms) {
-      if (ci.includes(syn) || syn.includes(ci)) return true;
+      if (ci === syn || isWordBoundaryMatch(ci, syn) || isWordBoundaryMatch(syn, ci)) return true;
     }
   }
 
   const ciSynonyms = synonymLookup.get(ci);
   if (ciSynonyms && ciSynonyms.has(ui)) return true;
 
-  // Token-based fallback
+  // Token-based fallback — but skip if both are single-token and already failed above
   const cocktailTokens = getIngredientTokens(cocktailIngredient);
   const userTokens = getIngredientTokens(userIngredient);
 
-  if (userTokens.length > 0 && userTokens.every(token => cocktailTokens.includes(token))) return true;
+  if (userTokens.length > 1 && userTokens.every(token => cocktailTokens.some(ct => ct === token))) return true;
 
   return false;
 }
