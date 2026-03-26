@@ -90,6 +90,19 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
     onAddToList?.(cocktail.id);
   }, [cocktail.id, onAddToList]);
 
+  const handleShare = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const ingredientList = cocktail.ingredients.map(i => `• ${i.amount} ${i.item}`).join('\n');
+    const text = `🍸 ${cocktail.name}\n\n${ingredientList}\n\nGarnish: ${cocktail.garnish}`;
+    const shareData = { title: cocktail.name, text };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch {}
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast('Recipe copied to clipboard!', { duration: 2000 });
+    }
+  }, [cocktail]);
+
   // CSS animation delay for staggered entry (cap at 20)
   const delayMs = Math.min(index, 20) * 30;
 
