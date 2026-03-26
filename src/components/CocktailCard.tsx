@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
-import { Heart, Plus, RotateCcw, ShoppingCart, Search, X } from 'lucide-react';
+import { Heart, Plus, RotateCcw, ShoppingCart, Search, X, Share2 } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Cocktail } from '@/data/cocktails';
 import { useAppStore } from '@/stores/useAppStore';
