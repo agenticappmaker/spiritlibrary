@@ -22,21 +22,33 @@ export default function ShoppingListPage() {
       </header>
 
       {shoppingList.length > 0 && (
-        <div className="px-4 mb-4 flex gap-2 justify-end">
-          {checked.length > 0 && (
-            <button
-              onClick={clearCheckedItems}
-              className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
-            >
-              Clear checked ({checked.length})
-            </button>
-          )}
+        <div className="px-4 mb-4 flex flex-wrap gap-2 justify-between items-center">
           <button
-            onClick={() => setShowConfirmClear(true)}
-            className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-red-400 transition-colors"
+            onClick={() => {
+              const items = unchecked.map(i => i.ingredient).join(' ');
+              window.open(`https://www.instacart.com/store/search/${encodeURIComponent(items)}`, '_blank');
+            }}
+            className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-[#43B02A]/20 text-[#43B02A] hover:bg-[#43B02A]/30 transition-colors font-medium"
           >
-            Clear all
+            <ExternalLink className="w-3 h-3" />
+            Buy on Instacart
           </button>
+          <div className="flex gap-2">
+            {checked.length > 0 && (
+              <button
+                onClick={clearCheckedItems}
+                className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
+              >
+                Clear checked ({checked.length})
+              </button>
+            )}
+            <button
+              onClick={() => setShowConfirmClear(true)}
+              className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-red-400 transition-colors"
+            >
+              Clear all
+            </button>
+          </div>
         </div>
       )}
 
