@@ -251,7 +251,7 @@ function CocktailCard({ cocktail, index = 0, onAddToList }: CocktailCardProps) {
                             <ShoppingCart className="w-2.5 h-2.5" />
                             <svg className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 text-brass" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                           </span>
-                        ) : 'add'}
+                        ) : 'need?'}
                       </button>
                       <span className="text-foreground/90 flex-1">{ing.item}</span>
                       <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
@@ -409,7 +409,7 @@ function ExpandedOverlay({
                           <ShoppingCart className="w-3 h-3" />
                           <svg className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 text-brass" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         </span>
-                      ) : 'add'}
+                      ) : 'need?'}
                     </button>
                     <span className="text-foreground/90 flex-1">{ing.item}</span>
                     <span className="text-brass tabular-nums font-medium ml-2 shrink-0">{ing.amount}</span>
