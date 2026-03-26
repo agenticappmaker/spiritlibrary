@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShoppingCart, Trash2, Check, X } from 'lucide-react';
+import { ShoppingCart, Trash2, Check, X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/stores/useAppStore';
 
@@ -22,21 +22,33 @@ export default function ShoppingListPage() {
       </header>
 
       {shoppingList.length > 0 && (
-        <div className="px-4 mb-4 flex gap-2 justify-end">
-          {checked.length > 0 && (
-            <button
-              onClick={clearCheckedItems}
-              className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
-            >
-              Clear checked ({checked.length})
-            </button>
-          )}
+        <div className="px-4 mb-4 flex flex-wrap gap-2 justify-between items-center">
           <button
-            onClick={() => setShowConfirmClear(true)}
-            className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-red-400 transition-colors"
+            onClick={() => {
+              const items = unchecked.map(i => i.ingredient).join(' ');
+              window.open(`https://www.instacart.com/store/search/${encodeURIComponent(items)}`, '_blank');
+            }}
+            className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-[#43B02A]/20 text-[#43B02A] hover:bg-[#43B02A]/30 transition-colors font-medium"
           >
-            Clear all
+            <ExternalLink className="w-3 h-3" />
+            Buy on Instacart
           </button>
+          <div className="flex gap-2">
+            {checked.length > 0 && (
+              <button
+                onClick={clearCheckedItems}
+                className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-cream transition-colors"
+              >
+                Clear checked ({checked.length})
+              </button>
+            )}
+            <button
+              onClick={() => setShowConfirmClear(true)}
+              className="text-[11px] px-3 py-1.5 rounded-full glass text-muted-foreground hover:text-red-400 transition-colors"
+            >
+              Clear all
+            </button>
+          </div>
         </div>
       )}
 
@@ -63,12 +75,21 @@ export default function ShoppingListPage() {
                   <p className="text-[10px] text-muted-foreground">for {item.cocktailName}</p>
                 )}
               </div>
-              <button
-                onClick={() => removeFromShoppingList(item.ingredient)}
-                className="p-1 rounded hover:bg-muted/50 transition-colors"
-              >
-                <X className="w-3.5 h-3.5 text-muted-foreground" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => window.open(`https://www.instacart.com/store/search/${encodeURIComponent(item.ingredient)}`, '_blank')}
+                  className="p-1 rounded hover:bg-[#43B02A]/20 transition-colors"
+                  title="Buy on Instacart"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-[#43B02A]" />
+                </button>
+                <button
+                  onClick={() => removeFromShoppingList(item.ingredient)}
+                  className="p-1 rounded hover:bg-muted/50 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>
